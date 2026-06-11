@@ -1,0 +1,162 @@
+{
+  "intro_sequence": [
+    {
+      "str": 29,
+      "background": "tree",
+      "after": null,
+      "text": "  The day is warm, yet there is a\ncooling breeze.  The latest in a series\nof personal crises seems insurmountable.\nYou are being pulled apart in all\ndirections."
+    },
+    {
+      "str": 30,
+      "background": "tree",
+      "after": null,
+      "text": "Yet this afternoon walk in the country-\nside slowly brings relaxation to your\nharried mind.  The soil and strain of\nmodern high-tech living begins to wash\noff in layers. That willow tree near the\nstream looks comfortable and inviting."
+    },
+    {
+      "str": 31,
+      "background": "tree",
+      "after": null,
+      "text": "The buzz of dragonflies and the whisper\nof the willow's swaying branches bring\na deep peace.  Searching inward for\ntranquility and happiness, you close\nyour eyes."
+    },
+    {
+      "str": 32,
+      "background": "tree",
+      "after": "moongate_anim_1",
+      "text": "A high-pitched cascading sound like\ncrystal wind-chimes impinges on your\nfloating awareness.  As you open your\neyes, you see a shimmering blueness rise\nfrom the ground.  The sound seems to be\nemanating from this glowing portal."
+    },
+    {
+      "str": 33,
+      "background": "tree",
+      "after": null,
+      "text": "It is difficult to look at the blueness.\nLight seems to bend and distort around\nit, while the sound waves become so\nintense, they appear to become visible."
+    },
+    {
+      "str": 34,
+      "background": "tree",
+      "after": "moongate_anim_2",
+      "text": "The portal hangs there for a moment;\nthen, with the rush of an imploding\nvacuum, it sinks into the ground.\nSomething remains suspended in mid-air\nfor a moment before falling to earth\nwith a heavy thud."
+    },
+    {
+      "str": 35,
+      "background": "portal",
+      "after": null,
+      "text": "Somewhat shaken by this vision, you\nrise to your feet to investigate.  A\ncrude circle of stones surrounds the\nspot where the portal appeared. There is\nsomething glinting in the grass."
+    },
+    {
+      "str": 36,
+      "background": "tree",
+      "after": null,
+      "text": "You pick up an amulet shaped like a\ncross with a loop at the top.  It is an\nAnkh, the sacred symbol of life and\nrebirth.  But this could not have made\nthe thud, so you look again and find\na large book wrapped in thick cloth!"
+    },
+    {
+      "str": 37,
+      "background": "tree",
+      "after": null,
+      "text": "With trembling hands you unwrap the\nbook.  Behold, the cloth is a map, and\nwithin lies not one book, but two.  The\nmap is of a land strange to you, and the\nstyle speaks of ancient cartography."
+    },
+    {
+      "str": 38,
+      "background": "tree",
+      "after": null,
+      "text": "The script on the cover of the first\nbook is arcane but readable.  The title\nis:\n        The History of Britannia\n               as told by\n            Kyle the Younger"
+    },
+    {
+      "str": 39,
+      "background": "tree",
+      "after": null,
+      "text": "The other book is disturbing to look at.\nIts small cover appears to be fashioned\nout of some sort of leathery hide, but\nfrom what creature is uncertain.  The\nreddish-black skin radiates an intense\naura suggestive of ancient power."
+    },
+    {
+      "str": 40,
+      "background": "tree",
+      "after": null,
+      "text": "The tongue of the title is beyond your\nken.  You dare not open the book and\ndisturb whatever sleeps within.  You\ndecide to peruse the History.  Settling\nback under the willow tree, you open the\nbook."
+    },
+    {
+      "str": 41,
+      "background": "outside",
+      "after": null,
+      "text": "\n\n    (You read the Book of History)"
+    },
+    {
+      "str": 42,
+      "background": "outside",
+      "after": null,
+      "text": "\n\n(No, really! Read the Book of History!)"
+    },
+    {
+      "str": 43,
+      "background": "outside",
+      "after": null,
+      "text": "Closing the book, you again pick up\nthe Ankh.  As you hold it, you begin to\nhear a hauntingly familiar, lute-like\nsound wafting over a nearby hill.  Still\nclutching the strange artifacts, you\nrise unbidden and climb the slope."
+    },
+    {
+      "str": 44,
+      "background": "outside",
+      "after": null,
+      "text": "In the valley below you see what appears\nto be a fair.  It seems strange that you\ncame that way earlier and noticed\nnothing.  As you mull this over, your\nfeet carry you down towards the site."
+    },
+    {
+      "str": 45,
+      "background": "inside",
+      "after": null,
+      "text": "This is no ordinary travelling\ncarnival, but a Renaissance Fair.  The\npennants on the tent tops blow briskly\nin the late afternoon breeze."
+    },
+    {
+      "str": 46,
+      "background": "inside",
+      "after": null,
+      "text": "The ticket taker at the RenFair's gate\nstarts to ask you for money, but upon\nspotting your Ankh says, \"Welcome,\nfriend.  Enter in peace and find your\npath.\""
+    },
+    {
+      "str": 47,
+      "background": "wagon",
+      "after": null,
+      "text": "The music continues to pull you\nforward amongst the merchants and\nvendors.  Glimpses of fabulous treasures\ncan be seen in some of the shadowy\nbooths."
+    },
+    {
+      "str": 48,
+      "background": "wagon",
+      "after": null,
+      "text": "These people are very happy.  They seem\nto glow with an inner light.  Some look\nup as you pass and smile, but you cannot\nstop - the music compels you to move\nonward through the crowd."
+    },
+    {
+      "str": 49,
+      "background": "wagon",
+      "after": null,
+      "text": "Through the gathering dusk you see a\nsecluded gypsy wagon sitting off in the\nwoods.  The music seems to emanate from\nthe wagon.  As you draw near, a woman's\nvoice weaves into the music, saying:\n\"You may approach, O seeker.\""
+    },
+    {
+      "str": 50,
+      "background": "gypsy",
+      "after": null,
+      "text": "You enter to find an old gypsy sitting\nin a small curtained room.  She wears an\nAnkh around her neck. In front of her is\na round table covered in deep green\nvelvet.  The room smells so heavily of\nincense that you feel dizzy."
+    },
+    {
+      "str": 51,
+      "background": "abacus",
+      "after": null,
+      "text": "Seeing the Ankh, the ancient gypsy\nsmiles and warns you never to part with\nit.  \"We have been waiting such a long\ntime, but at last you have come.  Sit\nhere and I shall read the path of your\nfuture.\""
+    },
+    {
+      "str": 52,
+      "background": "abacus",
+      "after": null,
+      "text": "Upon the table she places a curious\nwooden object like an abacus but without\nbeads.  In her hands she holds eight\nunusual cards.  \"Let us begin the\ncasting.\""
+    }
+  ],
+  "casting": {
+    "place_first_two": "The gypsy places the first two cards\n",
+    "place_two_more": "The gypsy places two more of the cards\n",
+    "place_last_two": "The gypsy places the last two cards\n",
+    "are_the_cards_of": "upon the table.  They are the cards of\n",
+    "and": " and ",
+    "consider": ".  She says\n\"Consider this:\"",
+    "path_chosen": "With the final choice, the incense\nswells up around you.  The gypsy speaks\nas if from a great distance, her voice\ngrowing fainter with each word:\n\"So be it!  Thy path is chosen!\"",
+    "transport": "There is a moment of intense, wrenching\nvertigo.  As you open your eyes, a\nvoice whispers within your mind, \"Seek\nthe counsel of thy sovereign.\"  After a\nmoment, the spinning subsides, and you\nopen your eyes to..."
+  },
+  "book_of_history_placeholder": [
+    "\n\n    (You read the Book of History)",
+    "\n\n(No, really! Read the Book of History!)"
+  ]
+}

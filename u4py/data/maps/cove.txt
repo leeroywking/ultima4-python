@@ -1,0 +1,84 @@
+# Ultima IV map: cove  (town)
+# This file is the SINGLE SOURCE OF TRUTH for this map — edit freely.
+# Do NOT let an editor reflow it or strip trailing spaces; rows are fixed-width
+# and bracketed by | … |, and the crc32 footer is verified on load.
+# format: ascii-tilemap v1  width=32 height=32 wrap=none
+# legend (char  hex  name):
+#   ~  00  deep_water
+#   :  01  medium_water
+#   ,  02  shallow_water
+#   &  03  swamp
+#   .  04  grass
+#   '  05  scrub
+#   %  06  forest
+#   n  07  hills
+#   ^  08  mountains
+#   !  19  bridge_top
+#   $  1a  bridge_bottom
+#   (  37  rocks
+#   )  39  cobblestones
+#   +  3d  ankh
+#   *  3e  brick_floor
+#   -  3f  wood_floor
+#   /  46  fire_field
+#   0  49  secret_door_brick
+#   1  4b  spit_roast
+#   2  60  letter_a
+#   3  64  letter_e
+#   4  67  letter_h
+#   5  6b  letter_l
+#   6  71  letter_r
+#   B  7f  brick
+#
+|....nnn...nnnn^^::::^BBBBBBBBBBB|
+|..nnnnnnn^^^n^^::::^^B*BBB*+*BBB|
+|.nnnnnnnnn^^.^::::^^^B*BB*****BB|
+|.nnnn...nnn^.^:::^^^^B00/*****/B|
+|nnnn,,,,..n^^^:::^nn^BBBB*****BB|
+|nnn,,::,,.nn^n:::nnn^^^BB*****BB|
+|.nn,:~~:,,.nnn::::nnnn^B/*****/B|
+|.n.,,:~~:,...nn::::..nnBB*****BB|
+|....,,::,,......::::..nBB*****BB|
+|..n..,,,,........:::...B/*****/B|
+|.nn..............:::...BB*****BB|
+|.nn....'''......::::..'BBB***BBB|
+|.n....'''''....::::..''BBBB*BBBB|
+|.....'''*******!!!***'''BBB*BBB(|
+|***************---****'''****'(.|
+|***************$$$***********'n(|
+|***********'''.,,,'*********''nn|
+|........'''''.::::''*******''nnn|
+|..n......'''.::::'''..***.''nnn.|
+|.nnn''.......:::'''...***..'nnn.|
+|nn%%%''.....::::''....***.'''nnn|
+|n%%%%%'''...:):'''....***'''''nn|
+|%%%%%%%%''..:,:''....B***BBBB''n|
+|%%...%%%%'',::::'....B******B''(|
+|%'....%%%',,.:::'....B******B''(|
+|%..1..%%,,,.n::::...'B******B'n.|
+|%.....,,,...nn:::nn''B432536Bnn.|
+|%%....,''..nn^:::^nn'B******Bnnn|
+|n%%%%&&'''nn^^:::^^nnBBBBBBBBnnn|
+|nn%%&&&'nn^^^::::^^^nnn...nnnnnn|
+|.nnn&&&nn^^^::::^^^^^^nn(nnnnnn.|
+|..nnn&....^::::^^^^^^nn(.(.nn...|
+# crc32: c061b54e
+# npcs — one hex row per slot from the .ULT trailer (edit to move/retalk NPCs):
+# slot gtile    x    y tile oldx oldy move talk    ; tile
+#  0f    20   03   1a   20   03   1a   00   10    ; mage
+#  10    21   04   19   20   04   19   00   0f    ; mage
+#  11    21   03   18   20   03   18   00   0e    ; mage
+#  12    21   02   19   20   02   19   00   0d    ; mage
+#  13    26   0f   09   26   0f   09   00   0c    ; druid
+#  14    52   1a   18   52   1a   18   00   0b    ; merchant
+#  15    8a   0f   12   8a   0f   12   01   0a    ; seahorse
+#  16    26   13   04   26   13   04   00   09    ; druid
+#  17    e0   1d   19   e0   1d   19   00   08    ; mage_monster
+#  18    52   13   19   52   13   19   00   07    ; merchant
+#  19    55   14   18   54   14   18   00   06    ; bard_npc
+#  1a    3d   1b   01   3d   1b   01   00   05    ; ankh
+#  1b    e0   03   08   e0   03   08   00   04    ; mage_monster
+#  1c    53   0c   19   52   0c   19   00   03    ; merchant
+#  1d    26   0a   0f   26   0a   0f   00   02    ; druid
+#  1e    53   19   1b   52   19   1b   80   00    ; merchant
+#  1f    5a   0c   03   5a   0c   03   00   01    ; child

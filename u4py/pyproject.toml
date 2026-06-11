@@ -1,0 +1,73 @@
+# Packaging for the Ultima IV Python port (the *engine*; game DATA is not bundled — see
+# docs/AGENTS.md "Copyright / data licensing"). Build backend is setuptools.
+#
+# Validate without installing into the shared venv:
+#     python -c "import tomllib; tomllib.load(open('pyproject.toml','rb'))"
+# Dry-run resolve (no changes to the venv):
+#     python -m pip install --dry-run -e .
+# Full build (needs the `build` package, not installed by ./run):
+#     python -m build
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ultima4-py"
+version = "0.1.0"
+description = "A faithful, agent-playable Python port of Ultima IV (engine only; bring your own game data)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }            # engine code license; game DATA is separate, see docs/AGENTS.md
+authors = [{ name = "ultimate_rewrite contributors" }]
+keywords = ["ultima", "ultima4", "rpg", "game", "agent", "llm", "environment"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Games/Entertainment :: Role-Playing",
+    "Intended Audience :: Developers",
+]
+
+# Runtime deps mirror requirements.txt (pygame for the optional window/graphics, pillow for the
+# import tools). The agent env (ultima4.env.UltimaEnv) itself runs headlessly on top of these.
+dependencies = [
+    "pygame>=2.6",
+    "pillow>=10",
+]
+
+[project.optional-dependencies]
+# The MCP server (ultima4/agent/mcp_server.py, added by a parallel effort) exposes the env as
+# Model Context Protocol tools. Install with:  pip install "ultima4-py[mcp]"
+mcp = ["mcp>=1.27"]
+
+[project.urls]
+Homepage = "https://github.com/your-org/ultima4-py"
+Documentation = "https://github.com/your-org/ultima4-py/blob/main/u4py/docs/AGENTS.md"
+
+[project.scripts]
+# Run the reference random-walk agent (examples/random_agent.py::main, zero-arg compatible —
+# it parses sys.argv itself):  ultima4-agent --seed 7 --max-turns 40
+ultima4-agent = "examples.random_agent:main"
+# Print the observe/act contract plus a live opening observation:  ultima4-env-info
+ultima4-env-info = "examples.random_agent:print_env_info"
+#
+# NOTE: the CLI tools under u4py/tools/ (agent_play, demo, dump, maps, ...) are intentionally
+# NOT exposed as console scripts here: `tools/` is a loose script directory (no __init__.py) and
+# their main(argv) functions take an explicit argv, so they are not zero-arg console_script
+# callables. Use the `./run <cmd>` launcher for those (e.g. `./run agent-play`, `./run demo`).
+
+[tool.setuptools]
+# The importable package is `ultima4` (with subpackages agent/, knowledge/) plus the `examples`
+# package that holds the reference agent and the console-script entry points.
+packages = [
+    "ultima4",
+    "ultima4.agent",
+    "ultima4.knowledge",
+    "examples",
+]
+
+# Game DATA (u4py/data/, the converted data/maps/*.txt, data/dialogue/*.json, assets/*.png) is
+# deliberately NOT declared as package data: it derives from copyrighted Ultima IV content.
+# Ship the engine; users bring their own original U4 files and run `./run maps|gfx|dump` to
+# regenerate the editable assets locally. See docs/AGENTS.md.

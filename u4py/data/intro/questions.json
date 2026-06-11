@@ -1,0 +1,198 @@
+[
+  {
+    "a_index": 0,
+    "b_index": 1,
+    "a_virtue": "Honesty",
+    "b_virtue": "Compassion",
+    "text": "Entrusted to deliver an uncounted purse\nof gold, thou dost meet a poor beggar.\nDost thou A) deliver the gold knowing\nthe Trust in thee was well placed, or\nB) show Compassion, giving the beggar a\ncoin, knowing it won't be missed?"
+  },
+  {
+    "a_index": 0,
+    "b_index": 2,
+    "a_virtue": "Honesty",
+    "b_virtue": "Valor",
+    "text": "Thou has been prohibited by thy absent\nLord from joining thy friends in a close\npitched battle. Dost thou A) refrain, so\nthou may Honesty claim obedience, or\nB) show Valor, and aid thy comrades,\nknowing thou may deny it later?"
+  },
+  {
+    "a_index": 0,
+    "b_index": 3,
+    "a_virtue": "Honesty",
+    "b_virtue": "Justice",
+    "text": "A merchant owes thy friend money, now\nlong past due.  Thou dost see the same\nmerchant drop a purse of gold. Dost thou\nA) Honestly return the purse intact, or\nB) Justly give thy friend a portion of\nthe gold first?"
+  },
+  {
+    "a_index": 0,
+    "b_index": 4,
+    "a_virtue": "Honesty",
+    "b_virtue": "Sacrifice",
+    "text": "Thee and thy friend are valiant but\npenniless warriors.  Thou both go out to\nslay a mighty dragon.  Thy friend thinks\nhe slew it; thee did.  When asked, dost\nthou A) Truthfully claim the gold, or\nB) Allow thy friend the large reward?"
+  },
+  {
+    "a_index": 0,
+    "b_index": 5,
+    "a_virtue": "Honesty",
+    "b_virtue": "Honor",
+    "text": "Thou art sworn to protect thy Lord at\nany cost, yet thou know he hath\ncommitted a crime.  Authorities ask thee\nof the affair.  Dost thou A) break thine\noath by Honestly speaking, or B) uphold\nHonor by silently keeping thine oath?"
+  },
+  {
+    "a_index": 0,
+    "b_index": 6,
+    "a_virtue": "Honesty",
+    "b_virtue": "Spirituality",
+    "text": "Thy friend seeks admittance to thy\nSpiritual order. Thou art asked to vouch\nfor his purity of Spirit, of which thou\nart unsure.  Dost thou A) Honestly\nexpress thy doubt, or B) Vouch for him\nhoping for his Spiritual improvement?"
+  },
+  {
+    "a_index": 0,
+    "b_index": 7,
+    "a_virtue": "Honesty",
+    "b_virtue": "Humility",
+    "text": "Thy Lord mistakenly believes he slew a\ndragon.  Thou hast proof that thy lance\nfelled the beast.  When asked, dost thou\nA) Honestly claim the kill and the\nprize, or B) Humbly permit thy Lord his\nbelief?"
+  },
+  {
+    "a_index": 1,
+    "b_index": 2,
+    "a_virtue": "Compassion",
+    "b_virtue": "Valor",
+    "text": "Thou dost manage to disarm thy mortal\nenemy in a duel.  He is at thy mercy.\nDost thou A) show Compassion by\npermitting him to yield, or B) slay him\nas expected of a Valiant duelist?"
+  },
+  {
+    "a_index": 1,
+    "b_index": 3,
+    "a_virtue": "Compassion",
+    "b_virtue": "Justice",
+    "text": "After 20 years thou hast found the\nslayer of thy best friends.  The villain\nproves to be a man who provides the sole\nsupport for a young girl.  Dost thou\nA) spare him in Compassion for the girl,\nor B) slay him in the name of Justice?"
+  },
+  {
+    "a_index": 1,
+    "b_index": 4,
+    "a_virtue": "Compassion",
+    "b_virtue": "Sacrifice",
+    "text": "Thee and thy friends have been routed\nand ordered to retreat.  In defiance of\nthy orders, dost thou A) stop in\nCompassion to aid a wounded companion,\nor B) Sacrifice thyself to slow the\npursuing enemy, so others may escape?"
+  },
+  {
+    "a_index": 1,
+    "b_index": 5,
+    "a_virtue": "Compassion",
+    "b_virtue": "Honor",
+    "text": "Thou art sworn to uphold a Lord who\nparticipates in the forbidden torture of\nprisoners.  Each night their cries of\npain reach thee.  Dost thou A) show\nCompassion by reporting the deeds, or\nB) Honor thy oath and ignore the deeds?"
+  },
+  {
+    "a_index": 1,
+    "b_index": 6,
+    "a_virtue": "Compassion",
+    "b_virtue": "Spirituality",
+    "text": "Thou hast been taught to preserve all\nlife as sacred. A man lies fatally stung\nby a venomous serpent.  He pleads for a\nmerciful death.  Dost thou A) show\nCompassion and end his pain, or B) heed\nthy Spiritual beliefs and refuse?"
+  },
+  {
+    "a_index": 1,
+    "b_index": 7,
+    "a_virtue": "Compassion",
+    "b_virtue": "Humility",
+    "text": "As one of the King's Guard, thy Captain\nhas asked that one amongst you visit\na hospital to cheer the children with\ntales of thy valiant deeds.  Dost thou\nA) Show thy Compassion and play the\nbraggart, or B) Humbly let another go?"
+  },
+  {
+    "a_index": 2,
+    "b_index": 3,
+    "a_virtue": "Valor",
+    "b_virtue": "Justice",
+    "text": "Thou hast been sent to secure a needed\ntreaty with a distant Lord.  Thy host is\nagreeable to the proposal but insults\nthy country at dinner.  Dost thou\nA) Valiantly bear the slurs, or\nB) Justly rise and demand an apology?"
+  },
+  {
+    "a_index": 2,
+    "b_index": 4,
+    "a_virtue": "Valor",
+    "b_virtue": "Sacrifice",
+    "text": "A mighty knight accosts thee and demands\nthy food.  Dost thou A) Valiantly refuse\nand engage the knight, or B) Sacrifice\nthy food unto the hungry knight?"
+  },
+  {
+    "a_index": 2,
+    "b_index": 5,
+    "a_virtue": "Valor",
+    "b_virtue": "Honor",
+    "text": "During battle thou art ordered to guard\nthy commander's empty tent.  The battle\ngoes poorly and thou dost yearn to aid\nthy fellows.  Dost thou A) Valiantly\nenter the battle to aid thy companions,\nor B) Honor thy post as guard?"
+  },
+  {
+    "a_index": 2,
+    "b_index": 6,
+    "a_virtue": "Valor",
+    "b_virtue": "Spirituality",
+    "text": "A local bully pushes for a fight.  Dost\nthou A) Valiantly trounce the rogue, or\nB) Decline, knowing in thy Spirit that\nno lasting good will come of it?"
+  },
+  {
+    "a_index": 2,
+    "b_index": 7,
+    "a_virtue": "Valor",
+    "b_virtue": "Humility",
+    "text": "Although a teacher of music, thou art\na skillful wrestler.  Thou hast been\nasked to fight in a local championship.\nDost thou A) accept the invitation and\nValiantly fight to win, or B) Humbly\ndecline knowing thou art sure to win?"
+  },
+  {
+    "a_index": 3,
+    "b_index": 4,
+    "a_virtue": "Justice",
+    "b_virtue": "Sacrifice",
+    "text": "During a pitched battle, thou dost see\na fellow desert his post, endangering\nmany.  As he flees, he is set upon by\nseveral enemies. Dost thou A) Justly let\nhim fight alone, or B) Risk Sacrificing\nthine own life to aid him?"
+  },
+  {
+    "a_index": 3,
+    "b_index": 5,
+    "a_virtue": "Justice",
+    "b_virtue": "Honor",
+    "text": "Thou hast sworn to do thy Lord's\nbidding in all.  He covets a piece of\nland and orders the owner removed.  Dost\nthou A) serve Justice refusing to act,\nthus being disgraced, or B) Honor thine\noath and unfairly evict the landowner?"
+  },
+  {
+    "a_index": 3,
+    "b_index": 6,
+    "a_virtue": "Justice",
+    "b_virtue": "Spirituality",
+    "text": "Thou dost believe that virtue resides\nin all people.  Thou dost see a rogue\nsteal from thy Lord.  Dost thou A) call\nhim to Justice, or B) personally try to\nsway him back to the Spiritual path of\ngood?"
+  },
+  {
+    "a_index": 3,
+    "b_index": 7,
+    "a_virtue": "Justice",
+    "b_virtue": "Humility",
+    "text": "Unwitnessed, thou hast slain a great\ndragon in self defense.  A poor warrior\nclaims the offered reward.  Dost thou\nA) Justly step forward to claim the\nreward, or B) Humbly go about life,\nsecure in thy self esteem?"
+  },
+  {
+    "a_index": 4,
+    "b_index": 5,
+    "a_virtue": "Sacrifice",
+    "b_virtue": "Honor",
+    "text": "Thou art a bounty hunter sworn to return\nan alleged murder.  After his capture\nthou believest him to be innocent.  Dost\nthou A) Sacrifice thy sizable bounty\nfor thy belief, or B) Honor thy oath to\nreturn him as thou hast promised?"
+  },
+  {
+    "a_index": 4,
+    "b_index": 6,
+    "a_virtue": "Sacrifice",
+    "b_virtue": "Spirituality",
+    "text": "Thou hast spent thy life in charitable\nand righteous work.  Thine uncle the\ninnkeeper lies ill and asks you to take\nover his tavern.  Dost thou A) Sacrifice\nthy life of purity to aid thy kin, or\nB) decline & follow thy Spirit's call?"
+  },
+  {
+    "a_index": 4,
+    "b_index": 7,
+    "a_virtue": "Sacrifice",
+    "b_virtue": "Humility",
+    "text": "Thou art an elderly, wealthy eccentric.\nThy end is near. Dost thou A) donate all\nthy wealth to feed hundreds of starving\nchildren, and receive public adulation,\nor B) Humbly live out thy life, willing\nthy fortune to thy heirs?"
+  },
+  {
+    "a_index": 5,
+    "b_index": 6,
+    "a_virtue": "Honor",
+    "b_virtue": "Spirituality",
+    "text": "In thy youth thou pledged to marry thy\nsweetheart.  Now thou art on a sacred\nquest in distant lands.  Thy sweetheart\nasks thee to keep thy vow.  Dost thou\nA) Honor thy pledge to wed, or B) follow\nthy Spiritual crusade?"
+  },
+  {
+    "a_index": 5,
+    "b_index": 7,
+    "a_virtue": "Honor",
+    "b_virtue": "Humility",
+    "text": "Thou art at a crossroads in thy life.\nDost thou A) Choose the Honorable life\nof a Paladin, striving for Truth and\nCourage, or B) Choose the Humble life\nof a Shepherd, and a world of simplicity\nand peace?"
+  },
+  {
+    "a_index": 6,
+    "b_index": 7,
+    "a_virtue": "Spirituality",
+    "b_virtue": "Humility",
+    "text": "Thy parents wish thee to become an\napprentice. Two positions are available.\nDost thou A) Become an acolyte in the\nSpiritual order, or B) Become an\nassistant to a humble village cobbler?"
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "ultima4": {
+      "command": "/home/ein/projects/ultimate_rewrite/u4py/.venv/bin/python",
+      "args": ["-m", "ultima4.agent.mcp_server"],
+      "env": { "PYTHONPATH": "/home/ein/projects/ultimate_rewrite/u4py" }
+    }
+  }
+}

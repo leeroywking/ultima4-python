@@ -1,0 +1,111 @@
+# Ultima IV map: britain  (town)
+# This file is the SINGLE SOURCE OF TRUTH for this map — edit freely.
+# Do NOT let an editor reflow it or strip trailing spaces; rows are fixed-width
+# and bracketed by | … |, and the crc32 footer is verified on load.
+# format: ascii-tilemap v1  width=32 height=32 wrap=none
+# legend (char  hex  name):
+#   ,  02  shallow_water
+#   .  04  grass
+#   '  05  scrub
+#   %  06  forest
+#   !  19  bridge_top
+#   $  1a  bridge_bottom
+#   &  30  force_field
+#   (  37  rocks
+#   )  38  body
+#   +  39  cobblestones
+#   /  3b  door
+#   *  3e  brick_floor
+#   -  49  secret_door_brick
+#   0  4b  spit_roast
+#   1  60  letter_a
+#   2  61  letter_b
+#   3  63  letter_d
+#   4  64  letter_e
+#   5  65  letter_f
+#   6  66  letter_g
+#   7  67  letter_h
+#   8  68  letter_i
+#   9  6b  letter_l
+#   :  6c  letter_m
+#   ;  6d  letter_n
+#   <  6e  letter_o
+#   =  6f  letter_p
+#   >  71  letter_r
+#   ?  72  letter_s
+#   @  73  letter_t
+#   A  74  letter_u
+#   C  76  letter_w
+#   D  78  letter_y
+#   E  7a  sign_blank
+#   F  7b  sign_border_right
+#   G  7c  sign_border_left
+#   H  7d  sign_border_bottom
+#   B  7f  brick
+#
+|++++++++++++++++BBBBBBBBBBBBBBBB|
+|+BBBBBBBBBB%%%%%B*******B**BH**B|
+|+B********B%%%%%B?=8>8@?BB*/***B|
+|+BC41=<;>DB%''%%B********B*B*GEB|
+|+B********&****%B*H*H*H**B*BBBBB|
+|+B*************'B********B*B*GEB|
+|+B********&****.B5<<3B***B*/***B|
+|+BE1>:<A>EB.***.B****B***B*BH**B|
+|+B********B.***.BBBBBB***B*BBBBB|
+|+BBBBBBBBBB.***.''*************B|
+|+'..........***..'*************B|
+|+''........'***..'*************B|
+|+'''......''***.''***B2>8@1;;81B|
+|+''''....'''***'''***B*********B|
+|*********************BEE:1;<>EEB|
+|*********************BBBBBBBBBBB|
+|*********************.(.....,,,+|
+|+'''......***''''.........,,,,,+|
+|+%%'''....***'''........,,,,,,,+|
+|+%%%%''...***''........,,,,,,,'+|
+|BBBB%%''..***'........,,,,,,'''+|
+|B**B%%%''.***........(,,,,...''+|
+|B**B%%%%''***........,,,,(....'+|
+|BB-BBBBBB'***........!!!!......+|
+|B)******&****........$$$$......+|
+|BF***********........,,,,......+|
+|B)******&****.......,,,,.......+|
+|BF*****GB''(........,,,,.......+|
+|B*******B%''.......,,,,''...0..+|
+|B74198;6B%%''....,,,,,,''......+|
+|B*******B%%%''.,,,,,,,''''.....+|
+|BBBBBBBBB+++++++++++++++++++++++|
+# crc32: 15a2173c
+# npcs — one hex row per slot from the .ULT trailer (edit to move/retalk NPCs):
+# slot gtile    x    y tile oldx oldy move talk    ; tile
+#  00    23   01   15   22   01   15   00   0e    ; bard
+#  01    26   04   1b   26   04   1b   01   0d    ; druid
+#  02    5b   0e   1d   5a   0e   1d   01   0a    ; child
+#  03    5b   10   1d   5a   10   1d   01   0a    ; child
+#  04    5b   10   1b   5a   10   1b   01   0a    ; child
+#  05    59   13   09   58   13   09   00   10    ; beggar
+#  06    2e   0f   1c   2e   0f   1c   01   0b    ; shepherd
+#  07    2e   1e   02   2e   1e   02   01   0f    ; shepherd
+#  08    50   0e   04   50   0e   04   00   09    ; guard
+#  09    38   01   1a   38   01   1a   00   0c    ; body
+#  0a    51   01   11   50   01   11   00   09    ; guard
+#  0b    51   01   0d   50   01   0d   00   09    ; guard
+#  0c    24   14   03   24   14   03   01   07    ; fighter
+#  0d    25   11   05   24   11   05   01   06    ; fighter
+#  0e    25   14   05   24   14   05   00   07    ; fighter
+#  10    55   11   03   54   11   03   00   08    ; bard_npc
+#  11    25   08   06   24   08   06   01   07    ; fighter
+#  12    23   04   04   22   04   04   01   05    ; bard
+#  13    50   14   16   50   14   16   00   04    ; guard
+#  14    51   14   19   50   14   19   00   04    ; guard
+#  15    56   1d   1d   56   1d   1d   01   02    ; jester
+#  16    5b   1b   1c   5a   1b   1c   00   03    ; child
+#  17    5a   1c   1b   5a   1c   1b   00   03    ; child
+#  18    53   1a   0d   52   1a   0d   01   00    ; merchant
+#  19    52   14   01   52   14   01   80   00    ; merchant
+#  1a    52   12   07   52   12   07   80   00    ; merchant
+#  1b    52   05   08   52   05   08   01   00    ; merchant
+#  1c    53   05   02   52   05   02   80   00    ; merchant
+#  1d    5b   1d   1c   5a   1d   1c   00   03    ; child
+#  1e    53   04   1e   52   04   1e   80   00    ; merchant
+#  1f    54   1c   1d   54   1c   1d   00   01    ; bard_npc

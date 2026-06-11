@@ -1,0 +1,15 @@
+# Machine-specific build artifacts (./run rebuilds the venv on first use)
+u4py/.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+.claude/settings.local.json
+
+# Unrelated projects that happen to share this directory (not part of the U4 rewrite)
+/bass/
+/quake3/
+
+# Decompiled DOS source — a nested git repo; reference only, not needed to run/play.
+/u4/

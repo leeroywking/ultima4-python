@@ -1,0 +1,92 @@
+# Ultima IV map: empath  (town)
+# This file is the SINGLE SOURCE OF TRUTH for this map — edit freely.
+# Do NOT let an editor reflow it or strip trailing spaces; rows are fixed-width
+# and bracketed by | … |, and the crc32 footer is verified on load.
+# format: ascii-tilemap v1  width=32 height=32 wrap=none
+# legend (char  hex  name):
+#   :  01  medium_water
+#   ,  02  shallow_water
+#   .  04  grass
+#   '  05  scrub
+#   %  06  forest
+#   !  16  tiled_floor
+#   $  30  force_field
+#   &  37  rocks
+#   +  3a  locked_door
+#   /  3b  door
+#   (  3c  chest
+#   )  3d  ankh
+#   *  3e  brick_floor
+#   -  45  energy_field
+#   0  49  secret_door_brick
+#   1  60  letter_a
+#   2  64  letter_e
+#   3  67  letter_h
+#   4  6b  letter_l
+#   5  6c  letter_m
+#   6  71  letter_r
+#   7  7a  sign_blank
+#   8  7b  sign_border_right
+#   9  7c  sign_border_left
+#   ;  7d  sign_border_bottom
+#   B  7f  brick
+#
+|BBB;BBB'..........'&''.'&'......|
+|B*****B''.......&'%%%''%%%''.&..|
+|B*****;'''.....''%%%%..%%%.%%...|
+|;**$**BBBBBBBBBB''%%.......%%%..|
+|B*****B77677577B'...........%%'.|
+|B*****B********B..%%.....%%..'&.|
+|BB;B**B**9778**+..%%.....%%%..'.|
+|'''B**B**;**;**B'....%%...%%.''.|
+|.''B**B********B%'..%%%.....''..|
+|..'B**0********B%%''%%'''''''&..|
+|...00BB********BBBBBBBBBBBB;BBB.|
+|...B*(B'******'B***98***B*****B.|
+|...B((B''****''B*;****;*B*****B.|
+|...BBBBBBB**BBBB********/*****;.|
+|...B''*******,:B********B*****B.|
+|...B'********,:B73214267B*****B.|
+|...B*********,:B********B**BBBB.|
+|...B***BBBBBBBBBBBBBBBBBB**B....|
+|...B***********************B....|
+|...B***********************B...,|
+|,..B***********************B..,,|
+|,,.B**BBBBBBB*****BBBBBBB**B.,,,|
+|,,,B**BB-)-BB*****B*****B**B,,,.|
+|.,,B**B!!!!!B*****B*****/**B,,..|
+|..,B**/!!!!!B*****B*****B**B,...|
+|BB;B**BBBBBBB*****BBBBBBB**B;BB.|
+|B*****B,,....*****..&.,,B*****B.|
+|B*****B,,,,&.*****..,,,,B*****B.|
+|;**$**;,,,,,,*****,,,,,,;**$**;.|
+|B*****B',,,,,*****,,,,,'B*****B.|
+|B*****B&'',,,*****,,,&''B*****B.|
+|BBB;BBB''....*****.....'BBB;BBB.|
+# crc32: a0869c74
+# npcs — one hex row per slot from the .ULT trailer (edit to move/retalk NPCs):
+# slot gtile    x    y tile oldx oldy move talk    ; tile
+#  08    26   1d   1a   26   1d   1a   00   10    ; druid
+#  09    2b   12   0c   2a   12   0c   00   0f    ; paladin
+#  0a    58   09   18   58   09   18   00   0e    ; beggar
+#  0b    2c   1c   06   2c   1c   06   00   0d    ; ranger
+#  0c    29   1d   02   28   1d   02   00   0c    ; tinker
+#  0d    27   16   09   26   16   09   00   0b    ; druid
+#  0e    23   15   02   22   15   02   00   0a    ; bard
+#  0f    52   10   05   52   10   05   00   09    ; merchant
+#  10    5a   0f   15   5a   0f   15   00   08    ; child
+#  11    54   02   14   54   02   14   00   07    ; bard_npc
+#  12    51   0c   0c   50   0c   0c   00   06    ; guard
+#  13    50   09   0c   50   09   0c   00   06    ; guard
+#  14    50   11   1a   50   11   1a   00   06    ; guard
+#  15    51   0d   1a   50   0d   1a   00   06    ; guard
+#  16    50   06   10   50   06   10   01   05    ; guard
+#  17    50   1b   0e   50   1b   0e   01   05    ; guard
+#  18    51   1a   1b   50   1a   1b   01   05    ; guard
+#  19    50   04   1b   50   04   1b   01   05    ; guard
+#  1a    51   02   02   50   02   02   01   05    ; guard
+#  1b    3d   09   16   3d   09   16   00   04    ; ankh
+#  1c    52   16   17   52   16   17   01   03    ; merchant
+#  1d    53   13   10   52   13   10   80   00    ; merchant
+#  1e    1f   0b   07   1f   0b   07   00   02    ; avatar_on_foot
+#  1f    1f   0a   07   1f   0a   07   00   01    ; avatar_on_foot

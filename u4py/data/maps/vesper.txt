@@ -1,0 +1,91 @@
+# Ultima IV map: vesper  (town)
+# This file is the SINGLE SOURCE OF TRUTH for this map — edit freely.
+# Do NOT let an editor reflow it or strip trailing spaces; rows are fixed-width
+# and bracketed by | … |, and the crc32 footer is verified on load.
+# format: ascii-tilemap v1  width=32 height=32 wrap=none
+# legend (char  hex  name):
+#   .  04  grass
+#   '  05  scrub
+#   %  06  forest
+#   !  30  force_field
+#   $  39  cobblestones
+#   /  3b  door
+#   &  3c  chest
+#   *  3e  brick_floor
+#   (  49  secret_door_brick
+#   )  60  letter_a
+#   +  63  letter_d
+#   ,  64  letter_e
+#   -  66  letter_g
+#   0  68  letter_i
+#   1  6b  letter_l
+#   2  6c  letter_m
+#   3  6f  letter_p
+#   4  71  letter_r
+#   5  72  letter_s
+#   6  74  letter_u
+#   7  75  letter_v
+#   8  7a  sign_blank
+#   9  7b  sign_border_right
+#   :  7c  sign_border_left
+#   B  7f  brick
+#
+|.........$$$$$$$$$$$$$$.........|
+|......$$$$..:7,53,49..$$$$......|
+|....$$$....**********....$$$....|
+|...$$...****************.''$$...|
+|...$..********************''$...|
+|..$$.*******''****''*******'$$..|
+|..$..****..'''****'''..****''$..|
+|..$..***..''''****''''..***''$..|
+|.$$..***..BBBB****BBBB..***''$$.|
+|.$...***..B**********B..***.''$.|
+|.$..'***..B**********B..***..'$.|
+|.$.''***..B**!****!**B..***...$.|
+|.$'''***..B**********B..***...$.|
+|.$''****.'B**********B..****..$.|
+|********''B**!****!**B..********|
+|*******'''B**********B'..*******|
+|******'''%B**********B%'..******|
+|.$''''''%%B**BB**BB**B%%'..'''$.|
+|.$'''''%%%B**B****B**B%%%'''''$.|
+|.$''BBBBBBB**B****B**BBBBBBB''$.|
+|.$''B*****/**B)425B**B*****B''$.|
+|.$''B*****B**B****B**B51,,3B''$.|
+|.$''B8)1,8B**BBBBBB**B*****B''$.|
+|.$$'B*****B*******B**/*****B'$$.|
+|..$'BBB&BBB*******BBBBBB88BB'$..|
+|..$''BBBB*(*******(**&&BBBB''$..|
+|..$$''%%B*B8-601+8B*&&&B%%''$$..|
+|...$'''%B*B*******B&&&&B%'''$...|
+|...$$'''BBBBBBBBBBBBBBBB'''$$...|
+|....$$$''''''''''''''''''$$$....|
+|......$$$$''''''''''''$$$$......|
+|.........$$$$$$$$$$$$$$.........|
+# crc32: e0a819d6
+# npcs — one hex row per slot from the .ULT trailer (edit to move/retalk NPCs):
+# slot gtile    x    y tile oldx oldy move talk    ; tile
+#  08    c9   07   15   c8   07   15   01   10    ; rogue
+#  09    2b   0f   13   2a   0f   13   00   0f    ; paladin
+#  0a    5a   19   09   5a   19   09   01   0e    ; child
+#  0b    57   06   0b   56   06   0b   01   0d    ; jester
+#  0c    2e   09   12   2e   09   12   00   0c    ; shepherd
+#  0d    2d   13   1e   2c   13   1e   01   0b    ; ranger
+#  0e    51   14   19   50   14   19   00   0a    ; guard
+#  0f    2e   13   0b   2e   13   0b   00   09    ; shepherd
+#  10    2e   14   0a   2e   14   0a   00   08    ; shepherd
+#  11    2e   14   09   2e   14   09   00   07    ; shepherd
+#  12    2e   12   09   2e   12   09   00   06    ; shepherd
+#  13    53   0d   19   52   0d   19   01   05    ; merchant
+#  14    29   0f   18   28   0f   18   01   04    ; tinker
+#  15    2e   09   1b   2e   09   1b   00   03    ; shepherd
+#  16    52   08   17   52   08   17   80   00    ; merchant
+#  17    53   0f   1b   52   0f   1b   01   80    ; merchant
+#  18    53   0f   15   52   0f   15   80   00    ; merchant
+#  19    53   17   14   52   17   14   01   00    ; merchant
+#  1a    50   1d   0d   50   1d   0d   00   02    ; guard
+#  1b    51   1d   11   50   1d   11   00   02    ; guard
+#  1c    50   02   11   50   02   11   00   02    ; guard
+#  1d    50   02   0d   50   02   0d   00   02    ; guard
+#  1e    e1   10   02   e0   10   02   00   01    ; mage_monster
+#  1f    e2   0f   02   e0   0f   02   00   01    ; mage_monster

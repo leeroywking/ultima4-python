@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+# Ultima IV (Python port) launcher.
+#
+#   ./run            play the game (EGA)
+#   ./run play cga   play in CGA colors
+#   ./run talk       headless Talk demo (no window)
+#   ./run dump       export all .TLK dialogue to data/dialogue/*.json
+#   ./run maps       import WORLD.MAP/.ULT/.DNG to editable data/maps/*.txt
+#   ./run demo       play a scripted live demo (./run demo for the list)
+#   ./run agent-play drive the game as an agent via UltimaEnv (observe/act, stateless replay)
+#   ./run agent-demo run the reference example agent (examples/random_agent.py)
+#   ./run watch      watch an agent play live in the game window
+#   ./run mcp        start the MCP server so external agents can play
+#   ./run install-mcp  register the MCP server with Claude Code (one command; user scope)
+#   ./run save       inspect data/PARTY.SAV
+#   ./run test       run the self-test suite
+#   ./run shell      drop into the project venv's python REPL
+#   ./run <args...>  anything else is passed straight to the venv python
+#
+# Bootstraps an isolated venv on first run, so system Python needs no extra packages.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+APP="$ROOT/u4py"
+VENV="$APP/.venv"
+PY="$VENV/bin/python"
+
+# --- bootstrap the venv if it (or its deps) are missing ----------------------
+ensure_venv() {
+    if [ ! -x "$PY" ]; then
+        echo "[run] creating venv at $VENV ..."
+        if ! python3 -m venv "$VENV" 2>/dev/null; then
+            echo "[run] ERROR: could not create venv. Install python3-venv:" >&2
+            echo "      sudo apt install python3-venv" >&2
+            exit 1
+        fi
+        "$PY" -m pip install --quiet --upgrade pip
+    fi
+    # Install/verify dependencies (cheap no-op once satisfied).
+    if ! "$PY" -c "import pygame, PIL" 2>/dev/null; then
+        echo "[run] installing dependencies (pygame, pillow) ..."
+        "$PY" -m pip install --quiet -r "$APP/requirements.txt"
+    fi
+}
+
+ensure_venv
+cd "$APP"
+
+cmd="${1:-play}"
+shift || true
+case "$cmd" in
+    play)  exec "$PY" play.py "${@:-ega}" ;;
+    town)  exec "$PY" play.py ega --town "${1:-britain}" ;;
+    talk)  exec "$PY" -m tools.talk_demo "$@" ;;
+    gfx)   exec "$PY" -m tools.convert_graphics "$@" ;;
+    intro) exec "$PY" -m tools.extract_intro "$@" ;;
+    maps)  exec "$PY" -m tools.convert_maps "$@" ;;
+    demo)  exec "$PY" -m tools.demo "$@" ;;
+    agent-play) exec "$PY" -m tools.agent_play "$@" ;;
+    agent-demo) exec "$PY" examples/random_agent.py "$@" ;;
+    watch) exec "$PY" -m tools.watch_agent "$@" ;;
+    mcp)   exec "$PY" -m ultima4.agent.mcp_server "$@" ;;
+    install-mcp)
+        # Register the game's MCP server with Claude Code in ONE command, so any agent on this
+        # machine can play it. Default scope is 'user' (available in every folder/project) — which
+        # is what lets a *separate* agent, pointed at this repo from another directory, find it.
+        # Registers the venv python directly (NOT `./run mcp`) so the stdio protocol stream stays
+        # clean. Override scope: `./run install-mcp project` or `... local`.
+        scope="${1:-user}"
+        if ! command -v claude >/dev/null 2>&1; then
+            echo "[install-mcp] 'claude' CLI not found on PATH — install Claude Code first," >&2
+            echo "              or add it manually (see u4py/docs/AGENTS.md)." >&2
+            exit 1
+        fi
+        claude mcp remove ultima4 >/dev/null 2>&1 || true     # idempotent: replace any prior entry
+        claude mcp add -s "$scope" ultima4 -e PYTHONPATH="$APP" -- "$PY" -m ultima4.agent.mcp_server
+        echo
+        echo "[install-mcp] Registered MCP server 'ultima4' (scope: $scope)."
+        echo "              Restart Claude Code; its tools then appear as mcp__ultima4__* "
+        echo "              (new_game / observe / act / legal_actions / play / list_demos / run_demo)."
+        echo "              Check it:  claude mcp list      Undo it:  claude mcp remove ultima4"
+        exit 0 ;;
+    agent) exec "$PY" -m tools.agent_repl "$@" ;;
+    dump)  exec "$PY" -m tools.dump_dialogue "$@" ;;
+    tiles) exec "$PY" -m tools.dump_tiles "$@" ;;
+    save)  exec "$PY" -m tools.inspect_save "${1:-data/PARTY.SAV}" ;;
+    test)  exec "$PY" -m tools.selftest "$@" ;;
+    shell) exec "$PY" "$@" ;;
+    *)     exec "$PY" "$cmd" "$@" ;;
+esac

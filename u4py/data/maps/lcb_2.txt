@@ -1,0 +1,103 @@
+# Ultima IV map: lcb_2  (town)
+# This file is the SINGLE SOURCE OF TRUTH for this map — edit freely.
+# Do NOT let an editor reflow it or strip trailing spaces; rows are fixed-width
+# and bracketed by | … |, and the crc32 footer is verified on load.
+# format: ascii-tilemap v1  width=32 height=32 wrap=none
+# legend (char  hex  name):
+#   .  04  grass
+#   '  05  scrub
+#   >  1c  ladder_down
+#   !  30  force_field
+#   $  37  rocks
+#   +  3a  locked_door
+#   /  3b  door
+#   *  3e  brick_floor
+#   %  3f  wood_floor
+#   &  44  poison_field
+#   (  45  energy_field
+#   )  46  fire_field
+#   ,  47  sleep_field
+#   -  49  secret_door_brick
+#   0  4b  spit_roast
+#   1  61  letter_b
+#   2  62  letter_c
+#   3  64  letter_e
+#   4  67  letter_h
+#   5  68  letter_i
+#   6  6a  letter_k
+#   7  6d  letter_n
+#   8  6e  letter_o
+#   9  6f  letter_p
+#   :  71  letter_r
+#   ;  72  letter_s
+#   <  73  letter_t
+#   =  7a  sign_blank
+#   ?  7b  sign_border_right
+#   @  7c  sign_border_left
+#   A  7d  sign_border_bottom
+#   B  7f  brick
+#
+|BBBABBB'''.............'BBBABBB.|
+|B*****B%%''...........''B*****B.|
+|B*****A%%'''.........'''A*****B.|
+|A**>**BBBBBBBBBBBBBBBBBBB**>**A.|
+|B*****B65<2437B=1:5<5;4=B*****B.|
+|B*****B*******B*********B*****B.|
+|BBAB**B00***AAB***@=?***B**BABB.|
+|'''B**BBB***BBB*!*A*A*!*B**B'''.|
+|.''B**B*******B*********B**B''..|
+|..'B**B*@?*@?*B*********B**B'...|
+|...B**/*******B*!*****!*B**B....|
+|...B**B*@?*@?*B*********B**B....|
+|...B**B*******B*********B**B....|
+|...B**BBBBBBBBBBBB***BBBB**B....|
+|...B*****************BBBB**B....|
+|...B*****************/**B**B....|
+|...B*****************B**B**B....|
+|...BBBBBBBBBBBBBBBBBBB**B**B....|
+|...B****!********B******B**B....|
+|...B****+********/******B**B....|
+|...B****!********B******B**B....|
+|...B!!!!!***!!!!!B******B**B....|
+|..'B****!***!****B******B**B'...|
+|.''B****+***!****B9:5;87B**B''..|
+|'''B****!***!****BB&(),BB**B'''.|
+|BBAB-BBBBBBBBBB-BBBBBBBBB**BABB.|
+|B*****+*****************+*****B.|
+|B*****+*****************+*****B.|
+|A**!**BBBBBBB=====BBBBBBB**!**A.|
+|B*****A''.$'''***'''.'''A*****B.|
+|B*****B'.$..''***''...$'B*****B.|
+|BBBABBB......'***'..$...BBBABBB.|
+# crc32: e00eade8
+# npcs — one hex row per slot from the .ULT trailer (edit to move/retalk NPCs):
+# slot gtile    x    y tile oldx oldy move talk    ; tile
+#  03    5b   0a   0c   5a   0a   0c   01   00    ; child
+#  04    5b   0d   0a   5a   0d   0a   01   00    ; child
+#  05    5a   0d   08   5a   0d   08   01   00    ; child
+#  06    57   15   09   56   15   09   01   03    ; jester
+#  07    50   04   10   50   04   10   01   04    ; guard
+#  08    50   02   02   50   02   02   01   04    ; guard
+#  09    59   04   16   58   04   16   00   07    ; beggar
+#  0a    51   1c   02   50   1c   02   01   04    ; guard
+#  0b    50   1c   1d   50   1c   1d   01   04    ; guard
+#  0c    51   16   1b   50   16   1b   01   04    ; guard
+#  0d    e2   02   1d   e0   02   1d   01   08    ; mage_monster
+#  0e    59   04   14   58   04   14   00   07    ; beggar
+#  0f    59   07   14   58   07   14   00   07    ; beggar
+#  10    58   04   12   58   04   12   00   07    ; beggar
+#  11    58   05   13   58   05   13   00   07    ; beggar
+#  12    b3   0e   17   b0   0e   17   00   06    ; reaper
+#  13    50   14   0d   50   14   0d   00   04    ; guard
+#  14    51   12   0d   50   12   0d   00   04    ; guard
+#  15    53   0b   06   52   0b   06   01   05    ; merchant
+#  16    53   09   06   52   09   06   01   05    ; merchant
+#  17    50   11   1d   50   11   1d   00   00    ; guard
+#  18    51   0d   1d   50   0d   1d   00   00    ; guard
+#  19    50   0c   13   50   0c   13   01   04    ; guard
+#  1a    51   12   12   50   12   12   00   04    ; guard
+#  1b    51   12   14   50   12   14   00   04    ; guard
+#  1c    57   13   0a   56   13   0a   01   03    ; jester
+#  1d    55   11   0b   54   11   0b   00   00    ; bard_npc
+#  1e    52   11   08   52   11   08   00   02    ; merchant
+#  1f    5e   13   07   5e   13   07   00   01    ; lord_british

@@ -1,0 +1,62 @@
+{
+  "title_screen": {
+    "lines": [
+      {
+        "row": 14,
+        "col": 2,
+        "text": "In another world, in a time to come."
+      },
+      {
+        "row": 16,
+        "col": 15,
+        "text": "Options:"
+      },
+      {
+        "row": 17,
+        "col": 11,
+        "text": "Return to the view"
+      },
+      {
+        "row": 18,
+        "col": 11,
+        "text": "Journey Onward"
+      },
+      {
+        "row": 19,
+        "col": 11,
+        "text": "Initiate New Game"
+      },
+      {
+        "row": 21,
+        "col": 3,
+        "text": "Conversion by James Van Artsdalen"
+      },
+      {
+        "row": 22,
+        "col": 5,
+        "text": "\t Copyright 1987 Lord British"
+      }
+    ],
+    "options": [
+      {
+        "row": 17,
+        "label": "Return to the view",
+        "action": "return_to_view"
+      },
+      {
+        "row": 18,
+        "label": "Journey Onward",
+        "action": "journey_onward"
+      },
+      {
+        "row": 19,
+        "label": "Initiate New Game",
+        "action": "new_game"
+      }
+    ],
+    "cursor": {
+      "row": 16,
+      "col": 24
+    }
+  }
+}

@@ -1,0 +1,110 @@
+# Ultima IV map: den  (town)
+# This file is the SINGLE SOURCE OF TRUTH for this map — edit freely.
+# Do NOT let an editor reflow it or strip trailing spaces; rows are fixed-width
+# and bracketed by | … |, and the crc32 footer is verified on load.
+# format: ascii-tilemap v1  width=32 height=32 wrap=none
+# legend (char  hex  name):
+#   :  01  medium_water
+#   ,  02  shallow_water
+#   .  04  grass
+#   '  05  scrub
+#   %  06  forest
+#   =  17  bridge
+#   !  19  bridge_top
+#   $  1a  bridge_bottom
+#   &  37  rocks
+#   /  3b  door
+#   *  3e  brick_floor
+#   (  3f  wood_floor
+#   )  45  energy_field
+#   +  49  secret_door_brick
+#   -  60  letter_a
+#   0  61  letter_b
+#   1  62  letter_c
+#   2  63  letter_d
+#   3  64  letter_e
+#   4  66  letter_g
+#   5  68  letter_i
+#   6  6a  letter_k
+#   7  6b  letter_l
+#   8  6c  letter_m
+#   9  6d  letter_n
+#   ;  6e  letter_o
+#   <  6f  letter_p
+#   >  71  letter_r
+#   ?  72  letter_s
+#   @  73  letter_t
+#   A  74  letter_u
+#   C  75  letter_v
+#   D  7a  sign_blank
+#   E  7b  sign_border_right
+#   F  7c  sign_border_left
+#   G  7d  sign_border_bottom
+#   B  7f  brick
+#
+|...,,,,,,,,,,,,,,,,,,,,,,,,,,,..|
+|..,,:::::::::::::::::::::::::,,.|
+|.,,:,,,,,,,,,,,,,,,,,,,,,,,,,:,,|
+|.,:,,&..).'%%%%%%%%%%%''....,,:,|
+|.::,&BBB+BBB%%''%%%BBBBBBBB..,:,|
+|.:::.B))*))B%''''%%B*/****BB.,:,|
+|.:::.B*)*)*B%'..''%B*B*****B.,:,|
+|.:::.B*****B''...''B*B4A572B.,:,|
+|.:::.B8-451B'....''B*B*****B.,:,|
+|.:::.B*****B......'B*BBBBBBB.,:,|
+|.:::.BBBBBBB......'B*B****B..,:,|
+|.:::..............'B*B->8?B..,:,|
+|.:::.............''B******B..,:,|
+|.:::............'''B****FDB..,:,|
+|!!!!!*********************B'.,:,|
+|(((((*******************FDB'',:,|
+|$$$$$*********************B%',:,|
+|.,,,%''...**...'''&B->8;A>B%%,:,|
+|.:::%%'''.**.''''%%B******B%%,:,|
+|.:::%%%%BB**BB%%%%%BB****BB%,,:,|
+|.:::%%%%B****B%%%%%%BBBBBB%%,::,|
+|.:::%BBBB****BBBB%%%%%%%%%%,,::,|
+|.:::%B**********B%%%%%%%%,,,:::,|
+|.:::%BDE*G**G*FDB%%%%''',,:,,,,,|
+|.:::%B**********B%%%''.,,,,,'',,|
+|.:::%B1-<@D07-16B%%''..====..',,|
+|.:::%BB********BB%%'..,,,,,...,,|
+|.::,%%BB@-C3>9BB%%%',,,:,,&..,,,|
+|.,:,,%%BBBBBBBB%%%,,,:::,''..,,,|
+|.,,:,,,,,,,,,,,,,,,:::::,''',,,.|
+|..,,::::::::::::::::::::,,,,,,,.|
+|...,,,,,,,,,,,,,,,,,,,,,,,,,,...|
+# crc32: 736fecb1
+# npcs — one hex row per slot from the .ULT trailer (edit to move/retalk NPCs):
+# slot gtile    x    y tile oldx oldy move talk    ; tile
+#  01    ff   0a   07   fc   0a   07   ff   00    ; balron
+#  02    52   11   09   52   11   09   00   0e    ; merchant
+#  03    cb   17   10   c8   17   10   00   0d    ; rogue
+#  04    e1   0e   06   e0   0e   06   00   0c    ; mage_monster
+#  05    c2   06   0b   c0   06   0b   01   0b    ; orc
+#  06    a4   1b   0a   a4   1b   0a   00   0a    ; troll
+#  07    e2   1b   1c   e0   1b   1c   00   09    ; mage_monster
+#  08    88   1e   15   88   1e   15   ff   00    ; sea_serpent
+#  09    89   02   08   88   02   08   ff   00    ; sea_serpent
+#  0a    88   02   14   88   02   14   ff   00    ; sea_serpent
+#  0b    cb   19   0c   c8   19   0c   00   08    ; rogue
+#  0c    20   06   1c   20   06   1c   00   07    ; mage
+#  0d    ca   18   06   c8   18   06   01   05    ; rogue
+#  0e    c8   0c   18   c8   0c   18   01   03    ; rogue
+#  0f    53   11   18   52   11   18   00   10    ; merchant
+#  10    cb   0b   15   c8   0b   15   00   03    ; rogue
+#  11    28   07   18   28   07   18   00   0f    ; tinker
+#  12    ca   0f   18   c8   0f   18   01   03    ; rogue
+#  13    c8   06   16   c8   06   16   00   03    ; rogue
+#  14    cb   0a   13   c8   0a   13   00   04    ; rogue
+#  15    51   13   0e   50   13   0e   00   02    ; guard
+#  16    51   0c   12   50   0c   12   00   02    ; guard
+#  17    51   09   12   50   09   12   00   02    ; guard
+#  18    2c   0f   16   2c   0f   16   00   06    ; ranger
+#  19    53   08   1a   52   08   1a   80   00    ; merchant
+#  1a    52   16   12   52   16   12   01   00    ; merchant
+#  1b    52   18   0a   52   18   0a   01   00    ; merchant
+#  1c    52   18   08   52   18   08   01   00    ; merchant
+#  1d    52   08   09   52   08   09   00   00    ; merchant
+#  1e    51   05   0e   50   05   0e   00   01    ; guard
+#  1f    51   05   10   50   05   10   00   01    ; guard

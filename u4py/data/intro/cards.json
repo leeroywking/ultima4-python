@@ -1,0 +1,50 @@
+[
+  {
+    "index": 0,
+    "virtue": "Honesty",
+    "image": "honcom",
+    "side": "left"
+  },
+  {
+    "index": 1,
+    "virtue": "Compassion",
+    "image": "honcom",
+    "side": "right"
+  },
+  {
+    "index": 2,
+    "virtue": "Valor",
+    "image": "valjus",
+    "side": "left"
+  },
+  {
+    "index": 3,
+    "virtue": "Justice",
+    "image": "valjus",
+    "side": "right"
+  },
+  {
+    "index": 4,
+    "virtue": "Sacrifice",
+    "image": "sachonor",
+    "side": "left"
+  },
+  {
+    "index": 5,
+    "virtue": "Honor",
+    "image": "sachonor",
+    "side": "right"
+  },
+  {
+    "index": 6,
+    "virtue": "Spirituality",
+    "image": "spirhum",
+    "side": "left"
+  },
+  {
+    "index": 7,
+    "virtue": "Humility",
+    "image": "spirhum",
+    "side": "right"
+  }
+]

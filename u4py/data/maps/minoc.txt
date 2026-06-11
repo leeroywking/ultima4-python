@@ -1,0 +1,99 @@
+# Ultima IV map: minoc  (town)
+# This file is the SINGLE SOURCE OF TRUTH for this map — edit freely.
+# Do NOT let an editor reflow it or strip trailing spaces; rows are fixed-width
+# and bracketed by | … |, and the crc32 footer is verified on load.
+# format: ascii-tilemap v1  width=32 height=32 wrap=none
+# legend (char  hex  name):
+#   ,  02  shallow_water
+#   &  03  swamp
+#   .  04  grass
+#   '  05  scrub
+#   n  07  hills
+#   !  37  rocks
+#   /  3b  door
+#   *  3e  brick_floor
+#   $  46  fire_field
+#   %  60  letter_a
+#   (  64  letter_e
+#   )  65  letter_f
+#   +  66  letter_g
+#   -  67  letter_h
+#   0  68  letter_i
+#   1  6a  letter_k
+#   2  6d  letter_n
+#   3  6e  letter_o
+#   4  6f  letter_p
+#   5  71  letter_r
+#   6  72  letter_s
+#   7  73  letter_t
+#   8  74  letter_u
+#   9  76  letter_w
+#   :  78  letter_y
+#   ;  7a  sign_blank
+#   <  7b  sign_border_right
+#   =  7c  sign_border_left
+#   >  7d  sign_border_bottom
+#   B  7f  brick
+#   ?  bd  phantom2
+#
+|BBBBBBBBBBBBBBBBBBBBBB.BBBBBBBBB|
+|B;<*B**/*=;B9%:)%5(56B.B4335;;;B|
+|B***/**B***B*********B.B;;-386(B|
+|B;<*B**B*=;B;;;022;;;B.B.......B|
+|BBBBB**B*=;B'********B.B<..>..=B|
+|B;<*B**BBBBB>*****>*>B.B.......B|
+|B***/***************>B!B<..>..=B|
+|B>**B*************>>'B'B.......B|
+|BBBBBBBBBBBBBBB***BBBB'B<..>..=B|
+|.nnnnnnnnnnn''.***.''''B.......B|
+|nnnnnn!nnn'''..***..''&BBB...BBB|
+|nnnnnnnnnn'''..***...'&&&&...&&!|
+|.n!nnnnnn'''..'***'..''&&.*&*&&&|
+|..nnnnn''''..''***''..''.**.*'&&|
+|**************************&*''&&|
+|*************************.*''&&n|
+|**************************.'&&nn|
+|..nnn........''***''.......''nn!|
+|.nnnnnn.......'***'.........''''|
+|nnnn!nnn.......***..........''''|
+|nnnnnnnn.......***..........'''n|
+|nnnnnnnnn....',***,'.......'''nn|
+|nn!nnnnnn...'',***,''......'''nn|
+|nnnnnnnnn!.BBBB***BBBB''..'''nnn|
+|.nnnnnnnnn!B?*******?B'''''''nn!|
+|.nnnnnnnnnnB?*******?BBBBBBBBBn.|
+|.nnnnnnnnn'B?*******?B;)35+(;Bn.|
+|..nnnnnnn''B*********/*******B..|
+|..nnnnnnn''B7-(;;0532B****=;;B..|
+|...nnnnnn''B*********B,,**$$$B..|
+|.....nnnnn'B;;93516;;B,,**>$$B..|
+|.......nnnnBBBBBBBBBBBBBBBBBBB..|
+# crc32: eb4dcd80
+# npcs — one hex row per slot from the .ULT trailer (edit to move/retalk NPCs):
+# slot gtile    x    y tile oldx oldy move talk    ; tile
+#  06    50   01   11   50   01   11   00   10    ; guard
+#  07    51   01   0d   50   01   0d   00   10    ; guard
+#  08    51   12   18   50   12   18   00   10    ; guard
+#  09    50   0e   18   50   0e   18   00   10    ; guard
+#  0a    51   1b   0f   50   1b   0f   00   10    ; guard
+#  0b    51   0e   11   50   0e   11   00   10    ; guard
+#  0c    50   12   11   50   12   11   00   10    ; guard
+#  0d    50   12   0d   50   12   0d   00   10    ; guard
+#  0e    50   0e   0d   50   0e   0d   00   10    ; guard
+#  0f    28   17   13   28   17   13   01   0f    ; tinker
+#  10    28   0e   04   28   0e   04   00   0e    ; tinker
+#  11    29   0a   1d   28   0a   1d   00   0d    ; tinker
+#  12    2f   1c   18   2e   1c   18   00   0c    ; shepherd
+#  13    22   0e   1a   22   0e   1a   01   0b    ; bard
+#  14    29   05   11   28   05   11   00   0a    ; tinker
+#  15    5a   06   03   5a   06   03   01   09    ; child
+#  16    2d   13   06   2c   13   06   00   08    ; ranger
+#  17    53   1c   09   52   1c   09   00   07    ; merchant
+#  18    52   1a   07   52   1a   07   00   06    ; merchant
+#  19    59   1c   03   58   1c   03   00   05    ; beggar
+#  1a    5a   1d   07   5a   1d   07   00   04    ; child
+#  1b    58   18   05   58   18   05   00   03    ; beggar
+#  1c    29   19   1c   28   19   1c   01   02    ; tinker
+#  1d    53   0f   1d   52   0f   1d   80   00    ; merchant
+#  1e    53   0f   02   52   0f   02   80   00    ; merchant
+#  1f    29   19   09   28   19   09   00   01    ; tinker

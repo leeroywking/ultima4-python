@@ -1,0 +1,95 @@
+# Ultima IV map: magincia  (town)
+# This file is the SINGLE SOURCE OF TRUTH for this map — edit freely.
+# Do NOT let an editor reflow it or strip trailing spaces; rows are fixed-width
+# and bracketed by | … |, and the crc32 footer is verified on load.
+# format: ascii-tilemap v1  width=32 height=32 wrap=none
+# legend (char  hex  name):
+#   ,  02  shallow_water
+#   &  03  swamp
+#   .  04  grass
+#   '  05  scrub
+#   %  06  forest
+#   !  19  bridge_top
+#   $  1a  bridge_bottom
+#   (  37  rocks
+#   )  39  cobblestones
+#   *  3e  brick_floor
+#   +  3f  wood_floor
+#   -  60  letter_a
+#   /  61  letter_b
+#   0  64  letter_e
+#   1  65  letter_f
+#   2  6c  letter_m
+#   3  6d  letter_n
+#   4  6e  letter_o
+#   5  6f  letter_p
+#   6  71  letter_r
+#   7  72  letter_s
+#   8  74  letter_u
+#   9  76  letter_w
+#   :  7a  sign_blank
+#   B  7f  brick
+#
+|......))))))))))))))))))))))))))|
+|.....&)&&&''''&&&&&&&&&&.......)|
+|....&&)&&'''''..&&&&&&&........)|
+|...&&,)&'''''.....&&&&BBBBBBB..)|
+|...&&,)&'''''....''&&*******B..)|
+|...&,,&&.''''....'''B90-5437B.&)|
+|...&,,&...''''..''''B*******B.&)|
+|...,,,&....''...'''')*******B&&)|
+|..,,,&&..........''('*******&&&)|
+|..,,,&............''')(***(&&&&)|
+|..,,,&'............''''***''&&&)|
+|.,,,&&''..'*..**.***'*'***''.&&)|
+|.,,,&&&''''**.*..****'*''*'..'&)|
+|!,!!!&&'''**'****..*****''''''&)|
+|&++,+*&*****'''....'''***''''%%)|
+|++,+&*&&*****'....''%B***(BB%%%)|
+|&+++&&*&*'***....''%%B******B%%)|
+|&$,$$&&&'''*'...''%%%%******B%%)|
+|.,,,&&&&.''**..BBBBBBB******B%%)|
+|.,,,&&&...'**..B*****B-*2486B%%)|
+|.,,,,&....*...&B*58/:B(*****B%%)|
+|..,,,&....***.&B*****BBBBBBB(%%)|
+|..,,,&&....**&&B*****B******B%%)|
+|..&,,,&....*&&&(&****B:144**B%')|
+|...&,,&...***&&&(***BB******B'')|
+|...&&,&...*..***&***.*******B'.)|
+|....&,&&..**.*&&***.********B..)|
+|....&&)&....***&***.****&&**B.&)|
+|.....&)&........&&...(BB(&&BB&&)|
+|.....&)&&........&.....&&&&&&&&)|
+|......)&&&......&.....&&&&&&&&&)|
+|......))))))))))))))))))))))))))|
+# crc32: 6f2c80fa
+# npcs — one hex row per slot from the .ULT trailer (edit to move/retalk NPCs):
+# slot gtile    x    y tile oldx oldy move talk    ; tile
+#  04    cd   1e   01   cc   1e   01   ff   0f    ; python
+#  05    f0   09   0f   f0   09   0f   00   10    ; daemon
+#  06    9e   0e   07   9c   0e   07   01   0e    ; ghost
+#  07    c7   17   19   c4   17   19   01   0d    ; skeleton
+#  08    c5   17   16   c4   17   16   00   0c    ; skeleton
+#  09    c7   11   15   c4   11   15   00   0b    ; skeleton
+#  0a    c7   09   02   c4   09   02   00   0a    ; skeleton
+#  0b    c6   08   03   c4   08   03   00   09    ; skeleton
+#  0c    c5   07   01   c4   07   01   00   08    ; skeleton
+#  0d    c5   0c   19   c4   0c   19   01   07    ; skeleton
+#  0e    9f   17   06   9c   17   06   00   06    ; ghost
+#  0f    9d   19   04   9c   19   04   00   05    ; ghost
+#  10    9d   1a   12   9c   1a   12   00   04    ; ghost
+#  11    9d   1b   1e   9c   1b   1e   01   02    ; ghost
+#  12    9f   1e   1b   9c   1e   1b   01   02    ; ghost
+#  13    9c   1c   1d   9c   1c   1d   01   02    ; ghost
+#  14    9e   1d   1c   9c   1d   1c   01   02    ; ghost
+#  15    9c   1e   1c   9c   1e   1c   01   02    ; ghost
+#  16    9c   1c   1e   9c   1c   1e   01   02    ; ghost
+#  17    9f   1d   1d   9c   1d   1d   01   02    ; ghost
+#  18    9c   1d   1e   9c   1d   1e   01   02    ; ghost
+#  19    9e   1e   1d   9c   1e   1d   01   02    ; ghost
+#  1a    9d   1e   1e   9c   1e   1e   01   02    ; ghost
+#  1b    9d   0e   0f   9c   0e   0f   01   02    ; ghost
+#  1c    9c   12   13   9c   12   13   00   02    ; ghost
+#  1d    c7   14   16   c4   14   16   01   02    ; skeleton
+#  1e    c7   13   15   c4   13   15   00   03    ; skeleton
+#  1f    2e   01   1e   2e   01   1e   00   01    ; shepherd

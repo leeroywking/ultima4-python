@@ -1,0 +1,95 @@
+# Ultima IV map: skara  (town)
+# This file is the SINGLE SOURCE OF TRUTH for this map — edit freely.
+# Do NOT let an editor reflow it or strip trailing spaces; rows are fixed-width
+# and bracketed by | … |, and the crc32 footer is verified on load.
+# format: ascii-tilemap v1  width=32 height=32 wrap=none
+# legend (char  hex  name):
+#   ,  02  shallow_water
+#   .  04  grass
+#   '  05  scrub
+#   !  37  rocks
+#   $  38  body
+#   %  39  cobblestones
+#   +  3a  locked_door
+#   /  3b  door
+#   &  3d  ankh
+#   *  3e  brick_floor
+#   (  60  letter_a
+#   )  61  letter_b
+#   -  62  letter_c
+#   0  63  letter_d
+#   1  64  letter_e
+#   2  65  letter_f
+#   3  66  letter_g
+#   4  67  letter_h
+#   5  68  letter_i
+#   6  6b  letter_l
+#   7  6c  letter_m
+#   8  6d  letter_n
+#   9  6e  letter_o
+#   :  71  letter_r
+#   ;  72  letter_s
+#   <  73  letter_t
+#   =  74  letter_u
+#   >  78  letter_y
+#   ?  7a  sign_blank
+#   @  7b  sign_border_right
+#   A  7d  sign_border_bottom
+#   B  7f  brick
+#
+|....%%.................%%!!.....|
+|...!%,,,,,,,,,,,,,,,,,,,%!!.....|
+|..%%%%%%%%%''''''''''''%%!......|
+|..%,%*****%'''''''''''''!.......|
+|...,%41:);%'!!..!.!.!.!.........|
+|...,%*****%!..................!!|
+|...,%******..................!!!|
+|...,%*****%.................!%%%|
+|...,%%%%%%%.......!.!.!.!.!''%,%|
+|...,''''''!.......'''''''''''',.|
+|...,''''''!......!'BBBBBBBBBBB,.|
+|..%,%'''!!.......!'B<41@**/**B,.|
+|..%%%'!!.........!'B***+**B??B,.|
+|!.!.!!............!B588@**BBBB,.|
+|...................**********B,.|
+|............&......**********B,.|
+|...................**********B,.|
+|!.!.!.............!B2990??29:B,.|
+|..%%%!...........!'B*********B,.|
+|..%,%'!..........!'B?<49=34<?B,.|
+|...,''!...!!.....!'BBBBBBBBBBB,.|
+|...,''!..!''!.....'''''''''''',.|
+|...,''!..!'''.....!''''''''''',.|
+|...,%%%**%%%'!......!.!.!.!''%,%|
+|...,%*A**A$%''..............!%%%|
+|...,%******%''!..............!!!|
+|...,%******%''''!.............!!|
+|...,%7>;<5-%''''''!.!.!.........|
+|..%,%******%''''''''''''!.......|
+|..%%%41(61:%'''''''''''%%!......|
+|...!%,,,,,,,,,,,,,,,,,,,%!!.....|
+|....%%.................%%!!.....|
+# crc32: add30a9e
+# npcs — one hex row per slot from the .ULT trailer (edit to move/retalk NPCs):
+# slot gtile    x    y tile oldx oldy move talk    ; tile
+#  0b    5b   1d   09   5a   1d   09   00   0f    ; child
+#  0c    58   0b   03   58   0b   03   00   0e    ; beggar
+#  0d    3d   0c   0f   3d   0c   0f   00   0d    ; ankh
+#  0e    24   0c   10   24   0c   10   00   0c    ; fighter
+#  0f    22   0d   0f   22   0d   0f   00   0b    ; bard
+#  10    20   0c   0e   20   0c   0e   00   0a    ; mage
+#  11    25   09   1a   24   09   1a   00   09    ; fighter
+#  12    2d   1a   0f   2c   1a   0f   01   08    ; ranger
+#  13    5c   06   0a   5c   06   0a   01   00    ; bull
+#  14    5c   05   15   5c   05   15   01   00    ; bull
+#  15    53   0c   1d   52   0c   1d   01   07    ; merchant
+#  16    2d   1d   02   2c   1d   02   00   06    ; ranger
+#  17    59   02   00   58   02   00   00   05    ; beggar
+#  18    21   08   05   20   08   05   00   04    ; mage
+#  19    2d   16   10   2c   16   10   00   03    ; ranger
+#  1a    38   0a   18   38   0a   18   00   02    ; body
+#  1b    52   18   12   52   18   12   80   00    ; merchant
+#  1c    53   15   0c   52   15   0c   80   00    ; merchant
+#  1d    53   05   03   52   05   03   01   00    ; merchant
+#  1e    52   06   1c   52   06   1c   80   00    ; merchant
+#  1f    2d   0a   0f   2c   0a   0f   00   01    ; ranger
