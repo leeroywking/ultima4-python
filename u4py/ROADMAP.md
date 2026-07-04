@@ -6,6 +6,14 @@ update. The North Star: a playable game whose state & content are clean plain-te
 driven by two runtime agents (editor = writes, tutor = reads). See the project memory.
 
 ## ⏯ Start here next session (snapshot 2026-07-04)
+**✅ SHIPPED PUBLIC + onboarding hardened.** Live at github.com/leeroywking/ultima4-python (public).
+Fresh-clone onboarding is fixed: root `README.md` (clone→play quickstart), portable `.mcp.json`
+(`${CLAUDE_PROJECT_DIR:-.}`), stdio-clean MCP (no pygame banner leak). New watch/headless surfaces:
+**`./run mcp --window`** (watch an external/MCP-driven agent play live in a window — via
+`LiveWindow.submit`) and **`./run smoke [out.png]`** (headless one-frame render to PNG). CLAUDE.md
+now makes the visible-watch mode the gated default (never silently headless-play). Testing-agent
+issues #1 (onboarding) + #2 (watch MCP agent live) addressed & closed.
+
 **✅ ORIGINALS PURGED.** All original copyrighted binaries (`.EGA/.PIC/.ULT/.DNG/.TLK/.MAP/.CON`,
 the DOS executables) and the five one-shot import tools (`convert_graphics`, `extract_intro`,
 `convert_maps`, `dump_dialogue`, `lzw`) plus the decompiled `u4/` source tree have been **deleted**.
@@ -17,10 +25,12 @@ Ships as a **free, non-commercial fan port / agent toy** — public is fine (U4 
 freeware; see `docs/AGENTS.md` for attribution). The purge above makes the repo self-contained:
 clone → play, no original files needed.
 
-**Build is green: `./run test` = 81/81.** Runnable: `./run` (title → intro → game), `./run town britain`
-(debug boot), `./run demo` (scripted live playthroughs), `./run agent-play` / `./run agent-demo` /
-`./run watch` / `./run mcp` (the agent-playable stack — UltimaEnv observe/act, reference agent, live
-human-watch window, MCP server), `./run tiles` (regenerate the tile ref). Single source of truth
+**Build is green: `./run test` prints `N/N checks passed` (83/83 at this snapshot).** Runnable:
+`./run` (title → intro → game), `./run town britain` (debug boot), `./run demo` (scripted live
+playthroughs), `./run smoke` (headless one-frame PNG), `./run agent-play` / `./run agent-demo` /
+`./run watch` / `./run mcp` / `./run mcp --window` (the agent-playable stack — UltimaEnv observe/act,
+reference agent, live human-watch window, MCP server + windowed MCP), `./run tiles` (regenerate the
+tile ref). Single source of truth
 now holds for graphics (PNG), intro/tarot + menus (JSON), dialogue (JSON), the party seeds (JSON),
 **and all maps — overworld/towns/dungeons (editable ascii-tilemap, `data/maps/*.txt`)**; the import
 tools that produced them are gone (recover from git history ≤ `b5fa243` if ever needed).

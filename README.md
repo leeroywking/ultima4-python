@@ -9,22 +9,26 @@ you **watch each turn**.
 
 Paste this to a fresh Claude Code agent:
 
-> Clone https://github.com/leeroywking/ultima4-python, then set it up so I can watch you play.
-> Run `./run test` to build and verify (expect 81/81), then `./run install-mcp` to register the
-> game's MCP tools. Then tell me to **restart Claude Code and approve the `ultima4` server** — and
-> once I've done that and said go, play Ultima IV using the `mcp__ultima4__*` tools (start by meeting
-> Lord British) so every turn shows up here for me to watch. Don't play it headlessly.
+```
+Clone https://github.com/leeroywking/ultima4-python, then set it up so I can watch you play.
+Run ./run test to build and verify (it should end with "N/N checks passed"), then ./run install-mcp
+to register the game's MCP tools. Then tell me to restart Claude Code and approve the "ultima4"
+server — and once I've done that and said "go", play Ultima IV using the mcp__ultima4__* tools
+(start by walking to and meeting Lord British) so every turn renders here for me to watch.
+Don't play it headlessly.
+```
 
 What happens:
 
-1. **Clone + build** — `git clone …` then `./run test` bootstraps a virtualenv (needs `python3`,
-   internet for the first `pip install`) and runs the self-test suite (`81/81`).
+1. **Clone + build** — `git clone …` then `./run test` bootstraps a virtualenv (needs `python3` with
+   `venv`, and internet for the first `pip install`) and runs the self-test suite (it prints
+   `N/N checks passed`; all should pass).
 2. **Register the MCP server** — `./run install-mcp` (one command; user scope, so it works from any
    folder). The repo also ships a project `.mcp.json` as an alternative.
 3. **Restart Claude Code and approve** the `ultima4` server when prompted (this is a one-time
    security approval).
 4. **Play** — ask the agent to play; each `observe`/`act` renders in the conversation, so you follow
-   along move by move.
+   along move by move. (Want a real game window too? Run `./run mcp --window` — see below.)
 
 ## Other ways to run it
 

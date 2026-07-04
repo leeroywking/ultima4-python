@@ -47,7 +47,7 @@ the human follows every turn. Loop: `new_game(seed)` → `observe()` → pick fr
 **If the `mcp__ultima4__*` tools are NOT available yet** (fresh clone / not approved / not
 restarted) — this is the common first-run case — **set them up, then STOP and hand off. Do not
 headless-play instead:**
-1. Build + confirm once (also creates the venv the server runs on): `./run test` (expect 81/81).
+1. Build + confirm once (also creates the venv the server runs on): `./run test` (all checks green).
 2. Say to the human, roughly:
    > "The game's ready. Please **restart Claude Code** (or reload this window) and **approve the
    > `ultima4` server** when prompted — then tell me to go and I'll play it so you can watch each
@@ -55,9 +55,14 @@ headless-play instead:**
 3. **Wait for them.** After the restart the tools appear; then play via MCP.
 
 ### Human watches a live game window (needs a display)
-`./run watch` plays live in the real pygame window (the character moves/talks/fights on screen);
-`./run demo` lists scripted set-piece playthroughs. Great when the human is at the machine with a
-display — not over plain SSH / headless.
+- **`./run mcp --window`** — the MCP server opens a visible window mirroring the game YOU are
+  playing over MCP: every `act()`/`new_game()` renders on screen as you call it. This is the way to
+  give a human a real game window of *your* actual play (not a canned policy). Falls back to headless
+  if there's no display.
+- `./run watch` plays live in the window but is driven by a built-in wander policy or a pre-recorded
+  demo (`--scenario NAME`), not by you; `./run demo` lists scripted set-piece playthroughs.
+
+Both need a display (a local machine, not plain SSH / headless).
 
 ### Headless CLI — for YOUR own testing, not a user-facing playthrough
 `./run agent-play --do "move N" --do "key T" ...` replays the action list statelessly and prints the

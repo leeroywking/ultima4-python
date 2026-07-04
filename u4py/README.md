@@ -27,7 +27,7 @@ live, with no code change.
 
 The fun way to run this is to let an AI agent play while you **watch each turn**. In Claude Code:
 
-1. **Build once:** `./run test` (creates the venv, expects `81/81`).
+1. **Build once:** `./run test` (creates the venv; it should end with `N/N checks passed`).
 2. **Restart / reload Claude Code and approve the `ultima4` MCP server** when prompted (the repo
    ships a `.mcp.json`). If no prompt appears, run `./run install-mcp` and restart.
 3. **Ask your agent to play** — e.g. *"play Ultima IV and take me through meeting Lord British."*
