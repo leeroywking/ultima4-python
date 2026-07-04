@@ -73,7 +73,9 @@ case "$cmd" in
             exit 1
         fi
         claude mcp remove ultima4 >/dev/null 2>&1 || true     # idempotent: replace any prior entry
-        claude mcp add -s "$scope" ultima4 -e PYTHONPATH="$APP" -e PYGAME_HIDE_SUPPORT_PROMPT=1 -- "$PY" -m ultima4.agent.mcp_server
+        # --window opens a visible game window when a display exists (auto headless fallback if not),
+        # so a human watching the Claude Code session also gets an on-screen game of the agent's play.
+        claude mcp add -s "$scope" ultima4 -e PYTHONPATH="$APP" -e PYGAME_HIDE_SUPPORT_PROMPT=1 -- "$PY" -m ultima4.agent.mcp_server --window
         echo
         echo "[install-mcp] Registered MCP server 'ultima4' (scope: $scope)."
         echo "              Restart Claude Code; its tools then appear as mcp__ultima4__* "

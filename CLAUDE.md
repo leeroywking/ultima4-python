@@ -44,6 +44,12 @@ server (tools `mcp__ultima4__*`). Every `observe()` / `act()` renders **in the c
 the human follows every turn. Loop: `new_game(seed)` → `observe()` → pick from `legal_actions` →
 `act(...)` → repeat, reading `view_ascii` / `visible` / `standing_on` / `messages` to decide.
 
+The shipped `.mcp.json` launches the server with `--window`, so **a real game window also opens
+automatically whenever the machine has a display** (it silently stays headless if not) — the human
+then watches both inline and on screen. If the human asks to *see* a window, or wonders why there
+isn't one, call **`viewer_status()`**: if it reports `headless`, relay its note (getting a window
+needs a `--window` relaunch + a Claude Code restart; it can't be toggled mid-session).
+
 **If the `mcp__ultima4__*` tools are NOT available yet** (fresh clone / not approved / not
 restarted) — this is the common first-run case — **set them up, then STOP and hand off. Do not
 headless-play instead:**
@@ -55,14 +61,15 @@ headless-play instead:**
 3. **Wait for them.** After the restart the tools appear; then play via MCP.
 
 ### Human watches a live game window (needs a display)
-- **`./run mcp --window`** — the MCP server opens a visible window mirroring the game YOU are
-  playing over MCP: every `act()`/`new_game()` renders on screen as you call it. This is the way to
-  give a human a real game window of *your* actual play (not a canned policy). Falls back to headless
-  if there's no display.
+- **MCP with a window is the default** — the shipped `.mcp.json` launches `--window`, so playing
+  over MCP already opens a visible window mirroring YOUR play (every `act()`/`new_game()` renders on
+  screen) whenever a display exists. Nothing extra to do; `viewer_status()` tells you if it's on.
+- **`./run mcp --window`** is the same thing launched by hand (for a standalone/kiosk session).
 - `./run watch` plays live in the window but is driven by a built-in wander policy or a pre-recorded
   demo (`--scenario NAME`), not by you; `./run demo` lists scripted set-piece playthroughs.
 
-Both need a display (a local machine, not plain SSH / headless).
+The window needs a display (a local machine, not plain SSH / headless); without one it falls back
+to headless automatically.
 
 ### Headless CLI — for YOUR own testing, not a user-facing playthrough
 `./run agent-play --do "move N" --do "key T" ...` replays the action list statelessly and prints the

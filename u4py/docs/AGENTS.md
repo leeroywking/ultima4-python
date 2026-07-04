@@ -231,7 +231,7 @@ repo and it starts playing**:
 2. The tools appear as `mcp__ultima4__*`. The agent plays the loop:
    `new_game(seed)` → `observe()` → pick from the returned `legal_actions` → `act("move N" | "key T"
    | "say health" | "pass")` → repeat. Tools: `new_game`, `observe`, `act`, `legal_actions`, `play`,
-   `list_demos`, `run_demo`.
+   `viewer_status`, `list_demos`, `run_demo`.
 
 If the agent runs from a **different folder** (not this repo as its project), register the server at
 user scope so it's visible everywhere — one command:
@@ -245,9 +245,10 @@ user scope so it's visible everywhere — one command:
 committed `.mcp.json` command and `./run mcp` keep **stdout clean** for the JSON-RPC stream (bootstrap
 chatter and the pygame banner go to stderr / are suppressed), so either is safe to launch.
 
-**Visible vs headless — where the human watches.** `./run mcp` is **headless** (no window); the human
-watches the agent play *inline in the Claude Code conversation*, since each `observe`/`act` renders as
-a tool result. If you want an actual on-screen game window mirroring the MCP session, use:
+**Visible vs headless — where the human watches.** The shipped `.mcp.json` launches the server with
+`--window`, so **a visible game window opens by default whenever the machine has a display** (and
+silently falls back to headless when it doesn't). The human then watches both inline (each
+`observe`/`act` is a tool result) and on screen. To launch a windowed server by hand:
 
 ```
 ./run mcp --window          # MCP server + a live window; the agent's moves render on screen
@@ -255,7 +256,10 @@ a tool result. If you want an actual on-screen game window mirroring the MCP ses
 
 The window runs a `LiveWindow` and every `act`/`new_game`/`play` is applied on its render thread, so
 what the agent does and what the screen shows are the *same* game. With no display it logs to stderr
-and falls back to headless. (Contrast `./run watch`, which shows a window but can only be driven by a
+and falls back to headless — and the `viewer_status` tool reports whether a window is attached (so a
+headless session can tell the human why there's no window: switching it on needs a `--window`
+relaunch + a Claude Code restart, not a mid-session toggle). (Contrast `./run watch`, which shows a
+window but can only be driven by a
 built-in wander policy or a pre-recorded demo — not an external agent.)
 
 ---

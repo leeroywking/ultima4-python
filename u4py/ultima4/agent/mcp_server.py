@@ -40,6 +40,12 @@ _env = UltimaEnv(seed=_DEFAULT_SEED)
 # state-changing tool (act/new_game/play) is applied ON the window's render thread so a human
 # watching the window sees each move land. When None, the tools mutate `_env` directly (headless).
 _window = None  # type: Any
+_viewer_note = ("Headless: no on-screen game window is attached — the human sees play only as the "
+                "inline observations returned by these tools. The shipped .mcp.json launches with "
+                "--window, so a window normally appears whenever the server's machine has a display; "
+                "if there's none, either no display was detected or the server was launched without "
+                "--window. Switching requires relaunching the server with --window and RESTARTING "
+                "Claude Code so it reconnects — it cannot be toggled mid-session.")
 
 
 def attach_window(window) -> None:
@@ -50,6 +56,22 @@ def attach_window(window) -> None:
 def detach_window() -> None:
     global _window
     _window = None
+
+
+def viewer_status() -> Dict[str, Any]:
+    """Report whether a live game WINDOW is mirroring this session for a human to watch.
+
+    Call this if the human asks to *see* the game / a window, or wonders why there's no window.
+    Returns {window_attached, mode, note}. If `window_attached` is false, relay the `note`: play is
+    headless (visible only as inline observations), and getting an on-screen window needs an --window
+    relaunch + a Claude Code restart — it can't be turned on mid-session."""
+    attached = _window is not None
+    return {
+        "window_attached": attached,
+        "mode": "windowed" if attached else "headless",
+        "note": ("A game window is open and mirrors each of your moves live." if attached
+                 else _viewer_note),
+    }
 
 
 def _apply(fn: Callable[[], Any], label: str = None) -> Any:
@@ -155,6 +177,7 @@ def build_server():
     mcp.tool()(act)
     mcp.tool()(legal_actions)
     mcp.tool()(play)
+    mcp.tool()(viewer_status)
     mcp.tool()(list_demos)
     mcp.tool()(run_demo)
     return mcp
@@ -195,6 +218,11 @@ def serve_windowed(which: str = "ega", action_every: int = 6) -> None:
     t.start()
     ready.wait(timeout=15)
     if "error" in state:
+        global _viewer_note
+        _viewer_note = (f"Headless: tried to open a game window but no usable display was found "
+                        f"({state['error']!r}), so play is visible only as inline observations. To "
+                        f"watch on screen, run the server on a machine with a display and RESTART "
+                        f"Claude Code. (viewer_status reflects this.)")
         print(f"[mcp --window] could not open a game window ({state['error']!r}); "
               f"serving headless. Set SDL_VIDEODRIVER=dummy to silence, or a real display to watch.",
               file=sys.stderr)

@@ -174,11 +174,14 @@ def _():
     from ultima4.agent import mcp_server as S
     from ultima4.live_window import LiveWindow
     S.new_game(7)                                    # known start (no window yet -> direct)
+    assert S.viewer_status()["mode"] == "headless"   # no window attached yet
     win = LiveWindow(S._env, which="ega", action_every=1)
     S.attach_window(win)
     t = threading.Thread(target=lambda: win.run(max_ticks=400), daemon=True)
     t.start()
     try:
+        vs = S.viewer_status()
+        assert vs["window_attached"] and vs["mode"] == "windowed", vs
         before = S.observe()["position"]
         for _ in range(4):
             S.act("move E")                          # each routed through the render thread
@@ -187,6 +190,7 @@ def _():
         assert after != before, "moves submitted via the window never took effect"
     finally:
         win.stop(); t.join(timeout=2.0); S.detach_window(); win.close()
+    assert S.viewer_status()["mode"] == "headless"   # detached again
 
 
 @check("agent-example: the reference random agent plays a coherent session and enters a town")

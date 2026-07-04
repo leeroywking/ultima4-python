@@ -2,7 +2,7 @@
   "mcpServers": {
     "ultima4": {
       "command": "${CLAUDE_PROJECT_DIR:-.}/u4py/.venv/bin/python",
-      "args": ["-m", "ultima4.agent.mcp_server"],
+      "args": ["-m", "ultima4.agent.mcp_server", "--window"],
       "cwd": "${CLAUDE_PROJECT_DIR:-.}/u4py",
       "env": {
         "PYTHONPATH": "${CLAUDE_PROJECT_DIR:-.}/u4py",
