@@ -30,7 +30,10 @@ What happens:
 
 - `./run` — **play it yourself** with the keyboard (opens the game window).
 - `./run watch` — watch an **agent play live in the game window** (needs a display, not plain SSH).
+- `./run mcp --window` — run the MCP server **with a visible window**, so a human watches an
+  external/MCP-driven agent play live (headless `./run mcp` if you just want the tools).
 - `./run demo` — scripted set-piece playthroughs (`./run demo` lists them).
+- `./run smoke [out.png]` — headless one-frame render to a PNG (CI / display-less check).
 - `./run agent-play --do "move N" --do "key T" …` — headless, stateless CLI (for scripting/testing).
 
 ## What's inside

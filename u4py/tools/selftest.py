@@ -154,6 +154,41 @@ def _():
     assert watch_selftest() > 0, "live window applied no actions"
 
 
+@check("smoke: headless one-frame render writes a PNG (no display needed)")
+def _():
+    import os, tempfile
+    os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+    os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
+    from tools import smoke
+    with tempfile.TemporaryDirectory() as d:
+        out = os.path.join(d, "frame.png")
+        assert smoke.main([out]) == 0
+        assert os.path.getsize(out) > 0, "smoke wrote an empty PNG"
+
+
+@check("mcp --window: MCP act()/new_game apply on the render thread and are observed live")
+def _():
+    import os, threading
+    os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+    os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
+    from ultima4.agent import mcp_server as S
+    from ultima4.live_window import LiveWindow
+    S.new_game(7)                                    # known start (no window yet -> direct)
+    win = LiveWindow(S._env, which="ega", action_every=1)
+    S.attach_window(win)
+    t = threading.Thread(target=lambda: win.run(max_ticks=400), daemon=True)
+    t.start()
+    try:
+        before = S.observe()["position"]
+        for _ in range(4):
+            S.act("move E")                          # each routed through the render thread
+        after = S.act("move E")["position"]
+        assert win.applied >= 4, f"render thread applied only {win.applied} of the submitted moves"
+        assert after != before, "moves submitted via the window never took effect"
+    finally:
+        win.stop(); t.join(timeout=2.0); S.detach_window(); win.close()
+
+
 @check("agent-example: the reference random agent plays a coherent session and enters a town")
 def _():
     import random

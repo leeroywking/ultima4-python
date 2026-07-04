@@ -240,12 +240,23 @@ user scope so it's visible everywhere — one command:
 ./run install-mcp           # registers 'ultima4' at user scope; restart Claude Code
 ```
 
-`claude mcp list` shows it; `claude mcp remove ultima4` undoes it. The registered launch command is
-the venv Python on `ultima4.agent.mcp_server` with `PYTHONPATH` set (the server uses package-relative
-imports and a clean stdout — do NOT launch it via `./run mcp` for a real client, as the launcher's
-dependency check prints to stdout and would corrupt the JSON-RPC stream). On a fresh machine the
-absolute paths in `.mcp.json` won't match — regenerate with `./run install-mcp project`, or hand-edit
-the two paths.
+`claude mcp list` shows it; `claude mcp remove ultima4` undoes it. The checked-in `.mcp.json` is
+**portable** — it uses `${CLAUDE_PROJECT_DIR:-.}`, so a clone works without editing paths. Both the
+committed `.mcp.json` command and `./run mcp` keep **stdout clean** for the JSON-RPC stream (bootstrap
+chatter and the pygame banner go to stderr / are suppressed), so either is safe to launch.
+
+**Visible vs headless — where the human watches.** `./run mcp` is **headless** (no window); the human
+watches the agent play *inline in the Claude Code conversation*, since each `observe`/`act` renders as
+a tool result. If you want an actual on-screen game window mirroring the MCP session, use:
+
+```
+./run mcp --window          # MCP server + a live window; the agent's moves render on screen
+```
+
+The window runs a `LiveWindow` and every `act`/`new_game`/`play` is applied on its render thread, so
+what the agent does and what the screen shows are the *same* game. With no display it logs to stderr
+and falls back to headless. (Contrast `./run watch`, which shows a window but can only be driven by a
+built-in wander policy or a pre-recorded demo — not an external agent.)
 
 ---
 

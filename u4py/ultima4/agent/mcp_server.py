@@ -28,7 +28,7 @@ is raised only when you actually try to build/run the server.
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 
 from ..env import UltimaEnv
 
@@ -36,13 +36,40 @@ from ..env import UltimaEnv
 _DEFAULT_SEED = 7
 _env = UltimaEnv(seed=_DEFAULT_SEED)
 
+# Optional visible window mirroring THIS session (see `serve_windowed`). When attached, every
+# state-changing tool (act/new_game/play) is applied ON the window's render thread so a human
+# watching the window sees each move land. When None, the tools mutate `_env` directly (headless).
+_window = None  # type: Any
+
+
+def attach_window(window) -> None:
+    global _window
+    _window = window
+
+
+def detach_window() -> None:
+    global _window
+    _window = None
+
+
+def _apply(fn: Callable[[], Any], label: str = None) -> Any:
+    """Run a state-changing operation on the window's render thread if one is attached (so it's
+    visible and race-free), else run it inline. Falls back to inline if the window has stopped."""
+    w = _window
+    if w is not None:
+        try:
+            return w.submit(fn, label=label)
+        except Exception:
+            pass   # window gone/timed out — degrade to headless rather than fail the tool
+    return fn()
+
 
 # --- plain tool logic (transport-agnostic; unit-testable without a client) ----
 # The FastMCP @mcp.tool() wrappers below delegate to these, so tests can call the logic
 # directly without standing up a stdio transport.
 def new_game(seed: int = _DEFAULT_SEED) -> Dict[str, Any]:
     """Start a fresh, deterministic game from `seed` and return the opening observation."""
-    return _env.reset(seed=seed)
+    return _apply(lambda: _env.reset(seed=seed), label=f"new_game({seed})")
 
 
 def observe() -> Dict[str, Any]:
@@ -56,7 +83,7 @@ def act(action: str) -> Dict[str, Any]:
     Grammar: 'move N|S|E|W' | 'key <LETTER>' | 'say <text>' | 'pass'. An unknown or malformed
     action is reported in the returned observation's `error` field rather than raising.
     """
-    return _env.act(action)
+    return _apply(lambda: _env.act(action), label=action)
 
 
 def legal_actions() -> List[str]:
@@ -70,8 +97,10 @@ def play(actions: List[str]) -> Dict[str, Any]:
     With no actions, returns the current observation. Use `act` if you need the observation
     after every step.
     """
-    trace = _env.play(actions)
-    return trace[-1] if trace else _env.observe()
+    def go():
+        trace = _env.play(actions)
+        return trace[-1] if trace else _env.observe()
+    return _apply(go, label=f"play({len(actions)} actions)")
 
 
 def list_demos() -> List[Dict[str, Any]]:
@@ -131,9 +160,71 @@ def build_server():
     return mcp
 
 
-def main() -> None:
-    """Stdio entrypoint: build the server and serve over stdio (FastMCP default)."""
-    build_server().run()
+def serve_windowed(which: str = "ega", action_every: int = 6) -> None:
+    """Serve the MCP stdio protocol AND mirror this session in a visible, human-watchable window.
+
+    The MCP server runs on the MAIN thread exactly as usual (so its stdio/signal behavior is
+    unchanged); a `LiveWindow` runs on a background thread and every `act`/`new_game`/`play` is
+    applied on that render thread (via `attach_window`), so the human watches the agent's moves
+    land live. If no display is available, we log to stderr and fall back to a headless server.
+    """
+    import sys
+    import threading
+    from ..live_window import LiveWindow
+
+    ready = threading.Event()
+    state: Dict[str, Any] = {}
+
+    def window_thread():
+        try:
+            win = LiveWindow(_env, which=which, action_every=action_every)
+        except Exception as e:                      # no display, bad driver, etc.
+            state["error"] = e
+            ready.set()
+            return
+        state["window"] = win
+        attach_window(win)
+        ready.set()
+        try:
+            win.run()                                # blocks here until the window is closed
+        finally:
+            detach_window()
+            win.close()
+
+    t = threading.Thread(target=window_thread, name="ultima4-window", daemon=True)
+    t.start()
+    ready.wait(timeout=15)
+    if "error" in state:
+        print(f"[mcp --window] could not open a game window ({state['error']!r}); "
+              f"serving headless. Set SDL_VIDEODRIVER=dummy to silence, or a real display to watch.",
+              file=sys.stderr)
+    else:
+        print("[mcp --window] watching window open — the agent's moves render live.", file=sys.stderr)
+
+    try:
+        build_server().run()                         # stdio server on the main thread
+    finally:
+        win = state.get("window")
+        if win is not None:
+            win.stop()
+            t.join(timeout=2.0)
+
+
+def main(argv: List[str] = None) -> None:
+    """Stdio entrypoint. `--window` also opens a visible window mirroring the session."""
+    import argparse
+    ap = argparse.ArgumentParser(prog="mcp", description="Ultima IV MCP server (stdio).")
+    ap.add_argument("--window", action="store_true",
+                    help="also open a visible window so a human can watch the agent play live")
+    ap.add_argument("--which", choices=("ega", "cga"), default="ega")
+    ap.add_argument("--speed", type=float, default=1.0,
+                    help="window pacing: >1 slower, <1 faster (ticks held per applied move)")
+    args = ap.parse_args(argv)
+
+    if args.window:
+        serve_windowed(which=args.which, action_every=max(1, round(6 * args.speed)))
+    else:
+        build_server().run()
 
 
 if __name__ == "__main__":

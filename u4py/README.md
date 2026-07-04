@@ -53,17 +53,31 @@ The original copyrighted data files are **not** included. Drop a U4 install's da
 
 Each ported module cites the C source it came from (e.g. `# C: U4_INIT.C C_C51C`).
 
-## Running
+## Running (`./run`)
 
-From the repo root (one level up), `./run` bootstraps the venv and dispatches:
+The `./run` launcher lives at the **repo root** — the parent of this `u4py/` directory (so from
+here, `../run`). It bootstraps the venv on first use and dispatches everything below. The only
+prereq is `python3` with `venv` (`sudo apt install python3-venv`; the script errors helpfully if
+it's missing).
 
-- `./run` — play (title → intro → game); `./run town <name>` — debug-boot straight into a town.
-- `./run test` — the headless self-test suite (keep it green).
-- The runtime assets are **pre-generated and committed** — editable plain text/PNG (`data/maps/*.txt`,
-  `data/dialogue/*.json`, `data/intro/*.json`, `data/party_start.json`, `assets/*.png`). The original
-  copyrighted binaries and the one-shot import tools that produced these have been removed; the game
-  needs no original files to run.
-- `./run tiles` — regenerate the tile reference (`docs/TILES.md`) from `assets/shapes.png`; `./run agent` — the editor/tutor console.
+Windowed (needs a display):
+- `./run` — play it yourself (title → intro → game); `./run town <name>` — debug-boot into a town.
+- `./run watch` — watch an agent play live in the window (`--scenario <name>` replays a demo live).
+
+Headless (no display — CI, SSH, agents):
+- `./run test` — the self-test suite (keep it green).
+- `./run smoke [out.png]` — render one frame to a PNG under `SDL_VIDEODRIVER=dummy` and exit.
+- `./run demo` — scripted live-demo playthroughs (`./run demo` lists them); `./run talk` — Talk demo.
+- `./run agent-play --do "move N" …` — drive the game as an agent (stateless observe/act replay).
+
+Agent server + tooling:
+- `./run mcp` — the MCP server so an external agent can play (headless); **`./run mcp --window`**
+  also opens a visible window mirroring the session, so a human watches the agent play live.
+- `./run install-mcp` — register the MCP server with Claude Code; `./run agent` — editor/tutor console.
+- `./run tiles` — regenerate the tile reference (`docs/TILES.md`) from `assets/shapes.png`.
+
+The runtime assets are **pre-generated and committed** (`data/maps/*.txt`, `data/dialogue/*.json`,
+`data/intro/*.json`, `data/party_start.json`, `assets/*.png`) — the game needs no original files.
 
 ## Tile reference — `docs/TILES.md`
 

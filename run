@@ -4,11 +4,12 @@
 #   ./run            play the game (EGA)
 #   ./run play cga   play in CGA colors
 #   ./run talk       headless Talk demo (no window)
+#   ./run smoke      headless one-frame render to a PNG (no display; CI/screenshot check)
 #   ./run demo       play a scripted live demo (./run demo for the list)
 #   ./run agent-play drive the game as an agent via UltimaEnv (observe/act, stateless replay)
 #   ./run agent-demo run the reference example agent (examples/random_agent.py)
 #   ./run watch      watch an agent play live in the game window
-#   ./run mcp        start the MCP server so external agents can play
+#   ./run mcp        start the MCP server so external agents can play (--window to watch live)
 #   ./run install-mcp  register the MCP server with Claude Code (one command; user scope)
 #   ./run save       inspect data/PARTY.SAV
 #   ./run test       run the self-test suite
@@ -53,6 +54,7 @@ case "$cmd" in
     play)  exec "$PY" play.py "${@:-ega}" ;;
     town)  exec "$PY" play.py ega --town "${1:-britain}" ;;
     talk)  exec "$PY" -m tools.talk_demo "$@" ;;
+    smoke) exec "$PY" -m tools.smoke "$@" ;;
     demo)  exec "$PY" -m tools.demo "$@" ;;
     agent-play) exec "$PY" -m tools.agent_play "$@" ;;
     agent-demo) exec "$PY" examples/random_agent.py "$@" ;;

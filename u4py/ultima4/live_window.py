@@ -24,7 +24,8 @@ from __future__ import annotations
 import queue
 import threading
 import time
-from typing import Callable, List, Optional, Union
+from dataclasses import dataclass, field
+from typing import Any, Callable, List, Optional, Union
 
 # play.py + env.py live next to / above this package; importing here keeps callers simple.
 import play
@@ -33,6 +34,16 @@ from .game import Game
 
 # A policy maps the current observation (a plain dict from env.observe()) to an action string.
 Policy = Callable[[dict], Optional[str]]
+
+
+@dataclass
+class _Job:
+    """A callable submitted from another thread to run ON the render thread (so it can safely
+    mutate the non-thread-safe Game), with its result/exception handed back via an Event."""
+    fn: Callable[[], Any]
+    done: threading.Event
+    label: Optional[str] = None
+    box: dict = field(default_factory=dict)
 
 
 class LiveWindow:
@@ -51,7 +62,6 @@ class LiveWindow:
             self.env = env_or_game
         else:
             self.env = UltimaEnv(game=env_or_game)
-        self.game = self.env.game
 
         self.which = which
         self.fps = max(1, int(fps))
@@ -78,11 +88,34 @@ class LiveWindow:
         self.clock = play.pygame.time.Clock()
         self.phase = 0
 
+    @property
+    def game(self) -> Game:
+        """Always the env's CURRENT game — so `env.reset()` (a new_game) is reflected live."""
+        return self.env.game
+
     # --- thread-safe action intake ------------------------------------------
     def enqueue(self, action: str) -> None:
         """Push an action string onto the queue. Safe to call from any thread."""
         if action:
             self.queue.put(action)
+
+    def submit(self, fn: Callable[[], Any], label: Optional[str] = None,
+               timeout: float = 15.0) -> Any:
+        """Run `fn` ON the render thread and return its result. Safe from any thread.
+
+        Use this to mutate the Game from an external controller (e.g. the MCP server): the render
+        loop applies it between frames, so the human sees each change land and there's no data race
+        with drawing. `label` (e.g. the action string) shows in the on-screen banner. If the window
+        is already stopped, `fn` runs inline on the caller's thread as a best-effort fallback."""
+        if self._stop.is_set():
+            return fn()
+        job = _Job(fn, threading.Event(), label)
+        self.queue.put(job)
+        if not job.done.wait(timeout):
+            raise TimeoutError("LiveWindow.submit: render thread did not apply in time")
+        if "err" in job.box:
+            raise job.box["err"]
+        return job.box.get("val")
 
     def stop(self) -> None:
         """Ask the render loop to exit cleanly (safe from any thread)."""
@@ -140,14 +173,25 @@ class LiveWindow:
         return self.applied
 
     def _apply_one(self) -> bool:
-        """Drain and apply a single queued action (render thread only)."""
+        """Drain and apply a single queued item — an action string, or a submitted `_Job`
+        (an external controller's callable). Render thread only (Game is not thread-safe)."""
         try:
-            action = self.queue.get_nowait()
+            item = self.queue.get_nowait()
         except queue.Empty:
             return False
-        self.env.act(action)
+        if isinstance(item, _Job):
+            try:
+                item.box["val"] = item.fn()
+            except Exception as e:                      # hand the failure back to submit()
+                item.box["err"] = e
+            finally:
+                item.done.set()
+            if item.label:
+                self._last_action = item.label
+        else:
+            self.env.act(item)
+            self._last_action = item
         self.applied += 1
-        self._last_action = action
         msgs = [m for m in self.game.messages if m]
         self._last_message = msgs[-1] if msgs else self._last_message
         return True

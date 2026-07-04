@@ -18,3 +18,7 @@ __pycache__/
 # committed seed is the editable data/party_start.json, never a binary .SAV.
 u4py/data/*.SAV
 u4py/data/*.sav
+
+# Render outputs written into u4py/ root by ./run smoke / render_view / debug boots (the real
+# art lives in u4py/assets/ and u4py/docs/tiles/, which are NOT matched by this root-only glob).
+u4py/*.png
