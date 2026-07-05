@@ -40,6 +40,7 @@ def _drive(gen):
         return e.value
 
 SCHEMA_VERSION = 1
+_UNSET = object()               # sentinel for "no previous value" in compact/delta observations
 
 # The command letters the engine's dispatch accepts, with friendly names (C: U4_MAIN.C switch).
 _COMMANDS = {
@@ -63,6 +64,12 @@ class UltimaEnv:
         # Whether observe/act advance the real-time moon clock. True for headless (the env is the
         # only driver); a LiveWindow sets it False because its render loop drives the clock instead.
         self.drive_clock = True
+        # "full" (default) sends the whole state each turn; "min" omits the big blocks (party,
+        # gold, food, inventory, items, legal_actions) when they haven't changed since the last
+        # observation — a large per-turn token saving during traversal. First obs after a reset (or
+        # after switching to min) sends everything.
+        self.verbosity = "full"
+        self._min_prev: Dict[str, Any] = {}
 
     # --- lifecycle -----------------------------------------------------------
     def reset(self, seed: Optional[int] = None) -> Dict[str, Any]:
@@ -71,6 +78,7 @@ class UltimaEnv:
         self.game.rng.seed(self.seed)
         self._cursor = 0
         self.last_error = None
+        self._min_prev = {}                          # fresh game -> next obs re-sends everything
         return self.observe()
 
     # --- perception ----------------------------------------------------------
@@ -108,6 +116,34 @@ class UltimaEnv:
             }
         return info
 
+    def _combat_info(self):
+        """Whose turn it is, and for each monster whether the active member can hit it (weapon reach
+        + alignment), so an agent doesn't guess. `None` unless in combat. C: combat.CombatState."""
+        g = self.game
+        if g.mode != MOD_COMBAT or g.combat is None:
+            return None
+        from .combat import RANGED_WEAPONS, RANGED_REACH
+        cur = g.combat.current()
+        if cur is None:
+            return None
+        weapon = g.party.chara[cur.member].weapon if cur.member >= 0 else 0
+        reach = RANGED_REACH if weapon in RANGED_WEAPONS else 1
+        mons = []
+        for m in g.combat.monsters:
+            if not m.alive:
+                continue
+            dx, dy = m.x - cur.x, m.y - cur.y
+            if dx == 0 and dy != 0:
+                direction = "S" if dy > 0 else "N"
+            elif dy == 0 and dx != 0:
+                direction = "E" if dx > 0 else "W"
+            else:
+                direction = None                     # diagonal — not directly attackable
+            dist = max(abs(dx), abs(dy))
+            mons.append({"tile": tile_name(m.tile), "dx": dx, "dy": dy, "direction": direction,
+                         "in_range": direction is not None and 1 <= dist <= reach})
+        return {"active_member": cur.member, "reach": reach, "monsters": mons}
+
     def observe(self, radius: int = 4) -> Dict[str, Any]:
         from .agent.rpc import GameRPC
         if self.drive_clock:
@@ -121,7 +157,7 @@ class UltimaEnv:
             loc = g.location.name
         elif g.mode == MOD_DUNGEON and g.dungeon is not None:
             loc = f"dungeon z={g.dungeon.z}"
-        return {
+        d = {
             "schema": SCHEMA_VERSION,
             "mode": MODE_NAMES.get(g.mode, "?"),
             "moves": p.moves,
@@ -134,6 +170,7 @@ class UltimaEnv:
             "inventory": snap["inventory"], "items": snap["items"],
             "visible": self._visible(radius),
             "moons": self._moons(),
+            "combat": self._combat_info(),
             "messages": new_msgs,
             "interaction": {"active": g.active is not None,
                             "prompt": getattr(g.active, "prompt", None) if g.active else None},
@@ -141,6 +178,26 @@ class UltimaEnv:
             "legal_actions": self.legal_actions(),
             "error": self.last_error,
         }
+        if d["combat"] is None:
+            del d["combat"]                          # only present in combat
+        return self._compact(d)
+
+    # --- token-saving: drop big blocks that haven't changed since the last observation ------
+    _MIN_DROPPABLE = ("party", "gold", "food", "inventory", "items", "legal_actions")
+
+    def _compact(self, d: Dict[str, Any]) -> Dict[str, Any]:
+        """When `verbosity == 'min'`, omit the large state blocks that are unchanged since the last
+        observation (they dominate the per-turn token cost during traversal but rarely change).
+        Omitted == unchanged from a previous full observation. Always kept: position/mode/messages/
+        moons/combat/travel_reason/etc. `verbosity == 'full'` (default) returns everything."""
+        if self.verbosity != "min":
+            return d
+        for k in self._MIN_DROPPABLE:
+            if k in d and d[k] == self._min_prev.get(k, _UNSET):
+                del d[k]                             # unchanged -> drop
+            elif k in d:
+                self._min_prev[k] = d[k]             # changed -> emit and remember
+        return d
 
     # --- legal actions (per-state) -------------------------------------------
     def legal_actions(self) -> List[str]:

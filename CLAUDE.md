@@ -81,6 +81,17 @@ observation + `legal_actions`; `./run agent-demo` runs the reference policy. Use
 script, or self-test — **not** as the way you play *for a human who wanted to watch* (they see almost
 nothing). Only play a real session this way if the human explicitly asks for an unattended/automated run.
 
+### Play efficiently (spend tokens once, not per tile)
+- **Decide once, then execute quietly.** Work out the route / moon timing / recruit order a single
+  time, jot it down, and don't re-derive it each turn.
+- **Cite the reference tables, don't recompute** — the moongate schedule and the companion/town/
+  **join rule** are precomputed in `u4py/docs/AGENTS.md` ("Agent reference tables"). (E.g. a
+  companion whose class == the Avatar's own class can *never* join — check before walking there.)
+- **Read the delta, not the dump.** Call `set_verbosity('min')` (MCP) once at the start; then each
+  turn only `position` / `mode` / `messages` / `travel_reason` matter — the party/inventory/
+  `legal_actions` blocks are omitted while unchanged.
+- **Aim `travel_to` at the real destination**, not waypoints; **narrate one line per beat**, not per tile.
+
 **Action grammar** (same everywhere): `"move N|S|E|W"`, `"key <LETTER>"` (T=Talk, E=Enter, C=Cast,
 Z=Ztats, K=Klimb, D=Descend, X=eXit…), `"say <text>"` (into an active Talk/shop), `"pass"`, and the
 time primitives `"wait <seconds>"` / `"wait until moongate|moons_dark|trammel N|felucca N"` (the moons

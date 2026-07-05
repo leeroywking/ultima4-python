@@ -592,6 +592,55 @@ def _():
     assert env.act(f"go {here['x']} {here['y']}").get("travel_reason") == "arrived"
 
 
+@check("agent tokens: verbosity='min' omits unchanged blocks; re-sends on change (issue #7)")
+def _():
+    from ultima4.env import UltimaEnv
+    env = UltimaEnv(seed=7); env.game.moon_wallclock = False
+    env.verbosity = "min"
+    o1 = env.observe()                              # first obs after switching -> everything present
+    assert "party" in o1 and "legal_actions" in o1 and "inventory" in o1
+    o2 = env.act("pass")                            # nothing changed -> big blocks omitted
+    assert "party" not in o2 and "legal_actions" not in o2
+    assert all(k in o2 for k in ("position", "mode", "messages", "moves"))   # deltas kept
+    env.game.party.gold += 5
+    o3 = env.act("pass")
+    assert "gold" in o3 and "party" not in o3       # only the changed block reappears
+    env.verbosity = "full"
+    assert all(k in env.observe() for k in ("party", "gold", "legal_actions"))
+
+
+@check("agent combat: observe() reports whose turn it is and which monsters are in weapon range")
+def _():
+    from ultima4.env import UltimaEnv
+    from ultima4 import combat
+    g = Game(); g.rng.seed(2); g.party.member_count = 1
+    c0 = g.party.chara[0]; c0.status, c0.hp, c0.hp_max, c0.weapon = "G", 100, 100, 7   # bow -> reach 3
+    combat.start_encounter(g, 0x90)
+    env = UltimaEnv(game=g)
+    cs = g.combat
+    cs.monsters[:] = [combat.Unit(cs.party_units[0].x, cs.party_units[0].y + 2, 0x90, 4, 4)]  # 2 S, aligned
+    ci = env.observe()["combat"]
+    assert ci["active_member"] == 0 and ci["reach"] == 3
+    m = ci["monsters"][0]
+    assert m["direction"] == "S" and m["in_range"] is True     # aligned + within bow reach
+    # a bare-hands member (reach 1) can't hit the same 2-away target
+    c0.weapon = 0
+    assert env.observe()["combat"]["monsters"][0]["in_range"] is False
+
+
+@check("reference tables: ./run reference regenerates from data_tables and is idempotent (issue #7)")
+def _():
+    from tools import gen_reference
+    from ultima4.data_tables import MOONGATE_X, MOONGATE_Y, PLACE_X, PLACE_Y, CLASS_COMPANION
+    sect = gen_reference.build()
+    # values come straight from the tables (no hand-copy drift)
+    assert f"({MOONGATE_X[0]},{MOONGATE_Y[0]})" in sect          # gate location for Trammel phase 0
+    assert f"({PLACE_X[0]},{PLACE_Y[0]})" in sect                # Lord British's Castle
+    assert CLASS_COMPANION[6] in sect                            # Shamino (Ranger)
+    assert "class ≠ the Avatar's own class" in sect             # the join rule
+    assert gen_reference.build() == sect                        # deterministic / idempotent
+
+
 # --- transport --------------------------------------------------------------
 @check("transport: board/exit, and a ship sails water but not land")
 def _():

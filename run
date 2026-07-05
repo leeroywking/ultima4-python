@@ -84,6 +84,7 @@ case "$cmd" in
         exit 0 ;;
     agent) exec "$PY" -m tools.agent_repl "$@" ;;
     tiles) exec "$PY" -m tools.dump_tiles "$@" ;;
+    reference) exec "$PY" -m tools.gen_reference "$@" ;;
     save)  exec "$PY" -m tools.inspect_save "${1:-data/PARTY.SAV}" ;;
     test)  exec "$PY" -m tools.selftest "$@" ;;
     shell) exec "$PY" "$@" ;;

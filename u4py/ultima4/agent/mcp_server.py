@@ -131,6 +131,17 @@ def legal_actions() -> List[str]:
     return _env.legal_actions()
 
 
+def set_verbosity(mode: str = "min") -> Dict[str, Any]:
+    """Control how much state each observation carries — set 'min' up front to save tokens on long
+    playthroughs. In 'min', an observation OMITS the party / gold / food / inventory / items /
+    legal_actions blocks on turns where they didn't change since the last observation (omitted ==
+    unchanged); position / mode / messages / moons / combat are always present. 'full' (default)
+    sends everything every turn. The returned observation re-sends everything once."""
+    _env.verbosity = "min" if str(mode).lower().startswith("min") else "full"
+    _env._min_prev = {}
+    return observe()
+
+
 def wait(seconds: float) -> Dict[str, Any]:
     """Let `seconds` of real game-time pass on the moon clock, then return the observation.
 
@@ -216,7 +227,10 @@ def build_server():
             "travel_to(x, y) (it walks the whole path in one call and stops on anything "
             "interesting); to let the real-time moons advance (e.g. for a moongate) call "
             "wait(seconds) or wait_until('moongate'/'moons_dark'/'trammel N'/'felucca N') instead "
-            "of repeating pass. Check observe()['moons'] to plan moongate travel."
+            "of repeating pass. Check observe()['moons'] to plan moongate travel. "
+            "To save tokens on long playthroughs, call set_verbosity('min') once at the start "
+            "(observations then omit unchanged party/inventory/legal_actions). Cite the precomputed "
+            "moongate + companion/town/join tables in docs/AGENTS.md instead of re-deriving them."
         ),
     )
 
@@ -225,6 +239,7 @@ def build_server():
     mcp.tool()(observe)
     mcp.tool()(act)
     mcp.tool()(legal_actions)
+    mcp.tool()(set_verbosity)
     mcp.tool()(play)
     mcp.tool()(wait)
     mcp.tool()(wait_until)
