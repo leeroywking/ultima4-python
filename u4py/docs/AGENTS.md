@@ -75,6 +75,7 @@ Every action is a short string:
 |---|---|
 | `move N` / `move S` / `move E` / `move W` | Compass movement (N = up/north). |
 | `key <LETTER>` | A command key: one of `A B C D E F G H I J K L M O P Q R S T U W X Z`. Friendly names below. |
+| `attack <dir>` / `talk <dir>` / `open <dir>` / `key A E` | **One-shot directional** command (key + direction in a single call). Bare `attack` (in combat) hits the nearest in-range foe. |
 | `say <text>` | Free text into an **active** Talk/shop interaction (e.g. `say health`, `say bye`). |
 | `pass` | Consume one turn (SPACE). |
 | `wait <seconds>` | Let real game-time pass on the **moon clock** without moving (e.g. `wait 20`). See "Time & the moons". |
@@ -126,6 +127,7 @@ Every `observe()`/`act()` returns a dict with these keys:
 | `items` | list | Quest items held (runes, stones, the three-part key, etc.). |
 | `visible` | list | NPCs/monsters in view: `{tile, dx, dy}` offsets from the party. |
 | `moons` | dict | `{trammel, felucca, gate}` — the two moon phases (0–7) and, when a gate is open, `gate:{x, y, destination:{x,y}\|"abyss", adjacent}`. See "Time & the moons". |
+| `combat` | dict/absent | Only in combat, and the **single authoritative frame**: `active:{member, pos, reach, can_attack:[dirs], nearest:{dir, step, dist, in_range, tile}}` + `monsters:[{tile, pos, dx, dy, dist, direction, in_range}]`, all from the active member. If `can_attack` is non-empty, `attack` (nearest) / `attack <dir>`; else `move` `active.nearest.step`. (In combat, `visible` is empty and — in `min` — `view_ascii`/`moons` are dropped.) |
 | `messages` | list[str] | Game text emitted **since the last observation** (deltas, not the whole log). |
 | `interaction` | `{active, prompt}` | Whether a Talk/shop dialog owns input, and its prompt. |
 | `won` | bool | True once the Avatar completes the quest. |

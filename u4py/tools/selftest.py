@@ -609,7 +609,7 @@ def _():
     assert all(k in env.observe() for k in ("party", "gold", "legal_actions"))
 
 
-@check("agent combat: observe() reports whose turn it is and which monsters are in weapon range")
+@check("agent combat: one authoritative frame (active/nearest/can_attack) + one-shot attack (#9/#11)")
 def _():
     from ultima4.env import UltimaEnv
     from ultima4 import combat
@@ -618,14 +618,29 @@ def _():
     combat.start_encounter(g, 0x90)
     env = UltimaEnv(game=g)
     cs = g.combat
-    cs.monsters[:] = [combat.Unit(cs.party_units[0].x, cs.party_units[0].y + 2, 0x90, 4, 4)]  # 2 S, aligned
+    cs.monsters[:] = [combat.Unit(cs.party_units[0].x, cs.party_units[0].y + 2, 0x90, 20, 20)]  # 2 S
     ci = env.observe()["combat"]
-    assert ci["active_member"] == 0 and ci["reach"] == 3
+    a = ci["active"]
+    assert a["member"] == 0 and a["reach"] == 3 and a["pos"] == {"x": cs.party_units[0].x, "y": cs.party_units[0].y}
+    assert a["can_attack"] == ["S"] and a["nearest"]["dir"] == "S" and a["nearest"]["in_range"] is True
     m = ci["monsters"][0]
-    assert m["direction"] == "S" and m["in_range"] is True     # aligned + within bow reach
-    # a bare-hands member (reach 1) can't hit the same 2-away target
+    assert m["direction"] == "S" and m["in_range"] is True and m["pos"] == {"x": cs.monsters[0].x, "y": cs.monsters[0].y}
+    # in combat `visible` is empty — the combat block is the single frame
+    assert env.observe()["visible"] == []
+    # bare hands (reach 1) can't hit the 2-away target -> can_attack empty
     c0.weapon = 0
-    assert env.observe()["combat"]["monsters"][0]["in_range"] is False
+    assert env.observe()["combat"]["active"]["can_attack"] == []
+    # one-shot: `attack S` in one call strikes the aligned monster (was 2 calls: key A -> move S)
+    c0.weapon = 7
+    before = cs.monsters[0].hp
+    env.act("attack S")
+    assert cs.monsters[0].hp < before, "attack <dir> one-shot did not strike"
+    # bare `attack` picks the nearest in-range direction automatically
+    cs.monsters[:] = [combat.Unit(cs.party_units[0].x + 1, cs.party_units[0].y, 0x90, 20, 20)]  # 1 E
+    g.combat.active = 0
+    hp0 = cs.monsters[0].hp
+    env.act("attack")
+    assert cs.monsters[0].hp < hp0, "bare 'attack' did not hit nearest"
 
 
 @check("reference tables: ./run reference regenerates from data_tables and is idempotent (issue #7)")

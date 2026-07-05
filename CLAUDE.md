@@ -81,16 +81,28 @@ observation + `legal_actions`; `./run agent-demo` runs the reference policy. Use
 script, or self-test — **not** as the way you play *for a human who wanted to watch* (they see almost
 nothing). Only play a real session this way if the human explicitly asks for an unattended/automated run.
 
-### Play efficiently (spend tokens once, not per tile)
-- **Decide once, then execute quietly.** Work out the route / moon timing / recruit order a single
-  time, jot it down, and don't re-derive it each turn.
-- **Cite the reference tables, don't recompute** — the moongate schedule and the companion/town/
-  **join rule** are precomputed in `u4py/docs/AGENTS.md` ("Agent reference tables"). (E.g. a
-  companion whose class == the Avatar's own class can *never* join — check before walking there.)
-- **Read the delta, not the dump.** Call `set_verbosity('min')` (MCP) once at the start; then each
-  turn only `position` / `mode` / `messages` / `travel_reason` matter — the party/inventory/
-  `legal_actions` blocks are omitted while unchanged.
-- **Aim `travel_to` at the real destination**, not waypoints; **narrate one line per beat**, not per tile.
+### Play efficiently — DON'T deliberate on forced moves (this is the speed lever)
+Most turns have no real choice; treating each like a puzzle is what makes play crawl. So:
+
+- **Act instantly on the obvious. No reasoning, no narration on a forced move** — just emit the
+  action. Spend thought ONLY at real branches: an enemy in range, low HP, a fork in the route, a
+  dialog/menu, something unexpected in `messages`. A whole traversal or a chase across the arena is
+  *one decision* ("head to X" / "close on the enemy"), then a run of reflex moves.
+- **Combat is almost always mechanical** — read one field and go:
+  - `observe()['combat']['active']['can_attack']` non-empty? → `act("attack")` (hits the nearest
+    in-range foe; or `attack <dir>`). Don't recompute geometry.
+  - Otherwise → step toward the foe: `act("move " + combat.active.nearest.step)`.
+  - Only stop to actually *think* if HP is low (flee/heal), a spell clearly wins it, or the setup is
+    unusual. Everything in `combat` is from the active member's frame — trust it, ignore `view_ascii`.
+- **One-shot directional commands:** `act("attack E")`, `act("talk N")`, `act("open W")` — one call,
+  not `key A` then `move E`.
+- **Read the delta, not the dump.** `set_verbosity('min')` once at the start; then each turn only
+  `position` / `mode` / `messages` / `combat` / `travel_reason` matter — the rest is omitted while
+  unchanged (and `view_ascii`/`moons` are dropped entirely during combat).
+- **Decide once; cite, don't recompute.** Route / moon timing / recruit order: work out once, jot it
+  down. The moongate schedule + companion/town/**join rule** are precomputed in
+  `u4py/docs/AGENTS.md` ("Agent reference tables") — cite them (e.g. a companion whose class == the
+  Avatar's own class can never join). **Narrate one line per beat, not per tile.**
 
 **Action grammar** (same everywhere): `"move N|S|E|W"`, `"key <LETTER>"` (T=Talk, E=Enter, C=Cast,
 Z=Ztats, K=Klimb, D=Descend, X=eXit…), `"say <text>"` (into an active Talk/shop), `"pass"`, and the

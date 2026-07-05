@@ -27,6 +27,11 @@ from .tiles import tile_name, is_walkable, LB_CASTLE_ENTRANCE
 
 # Orthogonal steps and the arrow key each maps to (N=up).
 _STEP_DIRS = (("UP", 0, -1), ("DOWN", 0, 1), ("RIGHT", 1, 0), ("LEFT", -1, 0))
+_DIR_KEY = {"N": "UP", "S": "DOWN", "E": "RIGHT", "W": "LEFT"}
+# Command words that prompt for a direction, so `act("attack E")` can do the key + direction in one
+# call instead of `key A` then `move E`. (C: U4_MAIN.C CMD_* — these all ask "Dir?".)
+_CMD_WORD = {"attack": "A", "talk": "T", "open": "O", "jimmy": "J",
+             "get": "G", "fire": "F", "enter": "E"}
 
 
 def _drive(gen):
@@ -95,9 +100,10 @@ class UltimaEnv:
 
     def _visible(self, radius: int = 4) -> List[Dict[str, Any]]:
         g = self.game
+        if g.mode == MOD_COMBAT:
+            return []                                # combatants live in the `combat` block (one frame)
         out = []
-        for col, row, tile in (list(g.npc_sprites(radius)) + list(g.monster_sprites(radius))
-                               + list(g.combat_sprites())):
+        for col, row, tile in (list(g.npc_sprites(radius)) + list(g.monster_sprites(radius))):
             out.append({"tile": tile_name(tile), "dx": col - radius, "dy": row - radius})
         return out
 
@@ -117,8 +123,11 @@ class UltimaEnv:
         return info
 
     def _combat_info(self):
-        """Whose turn it is, and for each monster whether the active member can hit it (weapon reach
-        + alignment), so an agent doesn't guess. `None` unless in combat. C: combat.CombatState."""
+        """The ONE authoritative combat frame (fixes the old confusion of three disagreeing frames):
+        everything is expressed from the ACTIVE member — whose turn it is — with absolute arena
+        positions too. `active.can_attack` lists the directions that hit something right now, and
+        `active.nearest` points at the closest monster, so the obvious move is a one-field read:
+        attack a `can_attack` direction, else `move` `active.nearest.dir`. `None` unless in combat."""
         g = self.game
         if g.mode != MOD_COMBAT or g.combat is None:
             return None
@@ -128,7 +137,7 @@ class UltimaEnv:
             return None
         weapon = g.party.chara[cur.member].weapon if cur.member >= 0 else 0
         reach = RANGED_REACH if weapon in RANGED_WEAPONS else 1
-        mons = []
+        mons, can_attack = [], []
         for m in g.combat.monsters:
             if not m.alive:
                 continue
@@ -140,9 +149,25 @@ class UltimaEnv:
             else:
                 direction = None                     # diagonal — not directly attackable
             dist = max(abs(dx), abs(dy))
-            mons.append({"tile": tile_name(m.tile), "dx": dx, "dy": dy, "direction": direction,
-                         "in_range": direction is not None and 1 <= dist <= reach})
-        return {"active_member": cur.member, "reach": reach, "monsters": mons}
+            in_range = direction is not None and 1 <= dist <= reach
+            if in_range and direction not in can_attack:
+                can_attack.append(direction)
+            mons.append({"tile": tile_name(m.tile), "pos": {"x": m.x, "y": m.y},
+                         "dx": dx, "dy": dy, "dist": dist, "direction": direction, "in_range": in_range})
+        # nearest monster (Chebyshev), and the step toward it (may be diagonal -> pick the longer axis)
+        nearest = min(mons, key=lambda e: e["dist"], default=None)
+        step = None
+        if nearest is not None:
+            ndx, ndy = nearest["dx"], nearest["dy"]
+            step = (("E" if ndx > 0 else "W") if abs(ndx) >= abs(ndy) else ("S" if ndy > 0 else "N"))
+        active = {
+            "member": cur.member, "pos": {"x": cur.x, "y": cur.y}, "reach": reach,
+            "can_attack": can_attack,               # attack these directions to hit now
+            "nearest": None if nearest is None else {
+                "dir": nearest["direction"], "step": step, "dist": nearest["dist"],
+                "in_range": nearest["in_range"], "tile": nearest["tile"]},
+        }
+        return {"active": active, "monsters": mons}
 
     def observe(self, radius: int = 4) -> Dict[str, Any]:
         from .agent.rpc import GameRPC
@@ -197,6 +222,9 @@ class UltimaEnv:
                 del d[k]                             # unchanged -> drop
             elif k in d:
                 self._min_prev[k] = d[k]             # changed -> emit and remember
+        if d.get("mode") == "combat":                # in combat the `combat` block is authoritative:
+            d.pop("view_ascii", None)                #   the map picture + moons are dead weight,
+            d.pop("moons", None)                     #   drop them from the highest-frequency call
         return d
 
     # --- legal actions (per-state) -------------------------------------------
@@ -207,7 +235,9 @@ class UltimaEnv:
         if g.pending_dir is not None:                    # a command is asking "which direction?"
             return ["move N", "move S", "move E", "move W"]
         if g.mode == MOD_COMBAT:
-            return ["move N", "move S", "move E", "move W", "key A", "pass"]
+            # one-shot forms: `attack <dir>` (or bare `attack` = nearest in-range) + moves toward foes
+            return ["attack", "attack N", "attack S", "attack E", "attack W",
+                    "move N", "move S", "move E", "move W", "pass"]
         if g.mode == MOD_DUNGEON:
             return ["move N (advance)", "move S (retreat)", "move E (turn right)",
                     "move W (turn left)", "key K", "key D", "key X", "key C", "key Z"]
@@ -245,12 +275,34 @@ class UltimaEnv:
             except (IndexError, ValueError):
                 self.last_error = f"{verb} needs 'x y' coordinates, got {rest!r}"
                 return self.observe()
+        # One-shot directional command: "attack E" / "talk N" / "open W" / "key A E" runs the command
+        # key AND its direction in one call. "attack" with no direction hits the nearest in-range foe.
+        letter, dir_arg = None, None
+        if verb == "key":
+            parts = rest.split()
+            letter = parts[0][:1].upper() if parts else ""
+            dir_arg = parts[1] if len(parts) > 1 else None
+        elif verb in _CMD_WORD:
+            letter, dir_arg = _CMD_WORD[verb], (rest.strip() or None)
+        if letter:
+            try:
+                self.game.handle(letter)
+            except (KeyError, IndexError):
+                self.last_error = f"malformed action {action!r}"
+                return self.observe()
+            if self.game.pending_dir is not None:        # the command is asking "which direction?"
+                d = (dir_arg or "").strip().upper()[:1]
+                if not d and verb == "attack":           # "attack" alone -> nearest in-range monster
+                    ci = self._combat_info()
+                    ca = ci["active"]["can_attack"] if ci else []
+                    d = ca[0] if ca else ""
+                if d in _DIR_KEY:
+                    self.game.handle(_DIR_KEY[d])
+            return self.observe()
         try:
             if verb == "move":
                 d = rest.strip().upper()[:1]
-                self.game.handle({"N": "UP", "S": "DOWN", "E": "RIGHT", "W": "LEFT"}[d])
-            elif verb == "key":
-                self.game.handle(rest.strip()[:1].upper())
+                self.game.handle(_DIR_KEY[d])
             elif verb in ("say", "feed"):
                 if self.game.active is None:
                     self.last_error = "no active interaction to 'say' into"
