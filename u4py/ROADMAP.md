@@ -16,7 +16,10 @@ trammel N|felucca N` (MCP tools `wait`/`wait_until`; also in `agent-play`). Move
 moons (`end_turn` untouched). `game.moon_wallclock=False` freezes wall-time for deterministic tests.
 Plus **`travel_to(x,y)`** / `"go x y"` (issue #5 traversal half) — BFS-pathfinds across the overworld/
 town in one call, stops on arrival/combat/dialog/damage/block with `travel_reason`+`steps_taken`.
-Batch tools are steered in CLAUDE.md/AGENTS.md + the MCP server `instructions`. `./run test` = 87/87.
+Batch tools are steered in CLAUDE.md/AGENTS.md + the MCP server `instructions`. In a **window** the
+batch ops **animate** (the render loop advances a generator one turn per frame via
+`LiveWindow.submit_op`/`_step_active_op`, so the human watches every tile walked + the moon glide);
+headless drives the same generator instantly. `./run test` = 88/88.
 
 **✅ SHIPPED PUBLIC + onboarding hardened.** Live at github.com/leeroywking/ultima4-python (public).
 Fresh-clone onboarding is fixed: root `README.md` (clone→play quickstart), portable `.mcp.json`

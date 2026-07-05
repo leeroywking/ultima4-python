@@ -38,12 +38,16 @@ Policy = Callable[[dict], Optional[str]]
 
 @dataclass
 class _Job:
-    """A callable submitted from another thread to run ON the render thread (so it can safely
-    mutate the non-thread-safe Game), with its result/exception handed back via an Event."""
-    fn: Callable[[], Any]
+    """Work submitted from another thread to run ON the render thread (so it can safely mutate the
+    non-thread-safe Game), with its result/exception handed back via an Event. Either a one-shot
+    callable `fn`, or a `gen` generator that yields once per internal turn — the render loop advances
+    it one step per pacing window, so a multi-turn op (travel/wait/play) ANIMATES instead of jumping.
+    A generator signals completion by `return`ing the final result (StopIteration.value)."""
+    fn: Optional[Callable[[], Any]]
     done: threading.Event
     label: Optional[str] = None
     box: dict = field(default_factory=dict)
+    gen: Optional[Any] = None
 
 
 class LiveWindow:
@@ -72,6 +76,7 @@ class LiveWindow:
         self.action_every = max(1, int(action_every))
 
         self.queue: "queue.Queue[str]" = queue.Queue()
+        self._active_op: Optional[_Job] = None  # a generator job being animated one step per slot
         self._stop = threading.Event()
         self._agent_done = threading.Event()   # set by a finished background feeder
 
@@ -120,6 +125,25 @@ class LiveWindow:
             raise job.box["err"]
         return job.box.get("val")
 
+    def submit_op(self, gen: Any, label: Optional[str] = None, timeout: float = 300.0) -> Any:
+        """Run a stepped operation (a generator that yields once per internal turn) ON the render
+        thread, ANIMATED — one step per pacing window, so the human watches every turn. Returns the
+        generator's `return` value. Safe from any thread. If the window is stopped, the op is driven
+        to completion inline as a fallback."""
+        if self._stop.is_set():
+            try:
+                while True:
+                    next(gen)
+            except StopIteration as e:
+                return e.value
+        job = _Job(None, threading.Event(), label, gen=gen)
+        self.queue.put(job)
+        if not job.done.wait(timeout):
+            raise TimeoutError("LiveWindow.submit_op: op did not finish in time")
+        if "err" in job.box:
+            raise job.box["err"]
+        return job.box.get("val")
+
     def stop(self) -> None:
         """Ask the render loop to exit cleanly (safe from any thread)."""
         self._stop.set()
@@ -147,10 +171,14 @@ class LiveWindow:
             if self._stop.is_set():
                 break
 
-            # 2) pacing: apply at most one queued action every `action_every` ticks, in the
-            #    render thread only (Game is not thread-safe — all mutation lives here).
+            # 2) pacing: every `action_every` ticks, advance ONE turn — a step of the active
+            #    generator op (travel/wait/play, so it animates) or one queued action. Render
+            #    thread only (Game is not thread-safe — all mutation lives here).
             if tick % self.action_every == 0:
-                self._apply_one()
+                if self._active_op is not None:
+                    self._step_active_op()
+                else:
+                    self._apply_one()
 
             # 3) animate: moons + creature shuffle run on the wall clock, not on movement.
             self.phase += 1
@@ -182,6 +210,11 @@ class LiveWindow:
             item = self.queue.get_nowait()
         except queue.Empty:
             return False
+        if isinstance(item, _Job) and item.gen is not None:
+            self._active_op = item                      # animate it, one step per pacing window
+            if item.label:
+                self._last_action = item.label
+            return True
         if isinstance(item, _Job):
             try:
                 item.box["val"] = item.fn()
@@ -198,6 +231,24 @@ class LiveWindow:
         msgs = [m for m in self.game.messages if m]
         self._last_message = msgs[-1] if msgs else self._last_message
         return True
+
+    def _step_active_op(self) -> None:
+        """Advance the active generator op by one turn (render thread only). On completion, hand the
+        op's return value back to the waiting submit_op()."""
+        job = self._active_op
+        try:
+            next(job.gen)                               # run one internal turn, up to its next yield
+            self.applied += 1
+        except StopIteration as e:
+            job.box["val"] = e.value
+            job.done.set()
+            self._active_op = None
+        except Exception as e:
+            job.box["err"] = e
+            job.done.set()
+            self._active_op = None
+        msgs = [m for m in self.game.messages if m]
+        self._last_message = msgs[-1] if msgs else self._last_message
 
     def _banner(self) -> Optional[str]:
         parts = []

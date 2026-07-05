@@ -75,8 +75,8 @@ def viewer_status() -> Dict[str, Any]:
 
 
 def _apply(fn: Callable[[], Any], label: str = None) -> Any:
-    """Run a state-changing operation on the window's render thread if one is attached (so it's
-    visible and race-free), else run it inline. Falls back to inline if the window has stopped."""
+    """Run a one-shot (single-turn) state change on the window's render thread if one is attached
+    (so it's visible and race-free), else run it inline. Falls back to inline if the window stopped."""
     w = _window
     if w is not None:
         try:
@@ -84,6 +84,24 @@ def _apply(fn: Callable[[], Any], label: str = None) -> Any:
         except Exception:
             pass   # window gone/timed out — degrade to headless rather than fail the tool
     return fn()
+
+
+def _apply_op(make_gen: Callable[[], Any], label: str = None) -> Any:
+    """Run a multi-turn op (a generator factory: travel/wait/play) — ANIMATED on the render thread
+    one turn per frame if a window is attached, else driven to completion inline. Returns the
+    generator's final value."""
+    w = _window
+    if w is not None:
+        try:
+            return w.submit_op(make_gen(), label=label)
+        except Exception:
+            return _env.observe()   # window gone/timed out — don't re-drive (would double-apply)
+    gen = make_gen()
+    try:
+        while True:
+            next(gen)
+    except StopIteration as e:
+        return e.value
 
 
 # --- plain tool logic (transport-agnostic; unit-testable without a client) ----
@@ -119,7 +137,7 @@ def wait(seconds: float) -> Dict[str, Any]:
     The moons run on a real-time clock, independent of your moves — `wait` is how you let that
     clock advance without moving (e.g. to wait for a moongate to cycle into reach). `observe()`
     reports the current phases and any open gate under `moons`."""
-    return _apply(lambda: _env.wait(seconds), label=f"wait {seconds}s")
+    return _apply_op(lambda: _env.wait_steps(seconds), label=f"wait {seconds}s")
 
 
 def wait_until(condition: str) -> Dict[str, Any]:
@@ -128,7 +146,7 @@ def wait_until(condition: str) -> Dict[str, Any]:
     Conditions: 'moongate' (an open gate is on/adjacent to you), 'moons_dark' (both moons new —
     for harvesting mandrake/nightshade), 'trammel N', or 'felucca N'. The observation gains
     `wait_reason` and `waited_seconds`."""
-    return _apply(lambda: _env.wait_until(condition), label=f"wait_until {condition}")
+    return _apply_op(lambda: _env.wait_until_steps(condition), label=f"wait_until {condition}")
 
 
 def travel_to(x: int, y: int, max_steps: int = 100) -> Dict[str, Any]:
@@ -137,7 +155,7 @@ def travel_to(x: int, y: int, max_steps: int = 100) -> Dict[str, Any]:
     transport) and takes real turns, but STOPS early and returns the observation the moment
     anything interesting happens: arrival, combat, a dialog opening, taking damage, a block, or
     `max_steps`. The result carries `travel_reason` and `steps_taken`. Overworld and towns only."""
-    return _apply(lambda: _env.travel_to(x, y, max_steps), label=f"travel_to({x},{y})")
+    return _apply_op(lambda: _env.travel_steps(x, y, max_steps), label=f"travel_to({x},{y})")
 
 
 def play(actions: List[str]) -> Dict[str, Any]:
@@ -146,10 +164,9 @@ def play(actions: List[str]) -> Dict[str, Any]:
     With no actions, returns the current observation. Use `act` if you need the observation
     after every step.
     """
-    def go():
-        trace = _env.play(actions)
-        return trace[-1] if trace else _env.observe()
-    return _apply(go, label=f"play({len(actions)} actions)")
+    if not actions:
+        return observe()
+    return _apply_op(lambda: _env.play_steps(actions), label=f"play({len(actions)} actions)")
 
 
 def list_demos() -> List[Dict[str, Any]]:

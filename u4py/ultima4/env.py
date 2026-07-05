@@ -28,6 +28,17 @@ from .tiles import tile_name, is_walkable, LB_CASTLE_ENTRANCE
 # Orthogonal steps and the arrow key each maps to (N=up).
 _STEP_DIRS = (("UP", 0, -1), ("DOWN", 0, 1), ("RIGHT", 1, 0), ("LEFT", -1, 0))
 
+
+def _drive(gen):
+    """Run a stepped-op generator to completion (headless — no window watching) and return its
+    final value. In a windowed session the render loop drives the same generator one step per frame
+    instead (so it animates); the end result is identical."""
+    try:
+        while True:
+            next(gen)
+    except StopIteration as e:
+        return e.value
+
 SCHEMA_VERSION = 1
 
 # The command letters the engine's dispatch accepts, with friendly names (C: U4_MAIN.C switch).
@@ -200,7 +211,13 @@ class UltimaEnv:
     def wait(self, seconds: float) -> Dict[str, Any]:
         """Let `seconds` of real game-time pass on the moon clock, then observe. Moves are
         unaffected — this is how a turn-based agent lets the real-time moons advance (e.g. to
-        wait for a moongate to cycle into reach)."""
+        wait for a moongate to cycle into reach). Animates the moon glide in a window."""
+        return _drive(self.wait_steps(seconds))
+
+    def wait_steps(self, seconds: float):
+        """Generator form of `wait`: advances the clock in bounded chunks, yielding each, so a
+        window animates the moon glide in a few seconds of wall-time regardless of how long is
+        waited; returns the final observation."""
         self.last_error = None
         try:
             secs = max(0.0, float(seconds))
@@ -208,14 +225,24 @@ class UltimaEnv:
             self.last_error = f"wait: seconds must be a number, got {seconds!r}"
             return self.observe()
         self.game.catch_up_moons()                       # fold in any elapsed wall time first
-        self.game.advance_moon_seconds(secs)
+        chunks = 24                                      # ~a few seconds of animation at any wait size
+        if secs > 0:
+            step = secs / chunks
+            for _ in range(chunks):
+                self.game.advance_moon_seconds(step)
+                yield
         return self.observe()
 
     def wait_until(self, condition: str, max_seconds: float = 600.0) -> Dict[str, Any]:
         """Advance the moon clock until `condition` holds (or `max_seconds` of game-time elapse),
         then observe. Conditions: 'moongate' (open gate on/adjacent to the avatar), 'moons_dark'
         (both moons new), 'trammel N', 'felucca N'. The observation gains `wait_reason` and
-        `waited_seconds`."""
+        `waited_seconds`. Animates in a window."""
+        return _drive(self.wait_until_steps(condition, max_seconds))
+
+    def wait_until_steps(self, condition: str, max_seconds: float = 600.0):
+        """Generator form of `wait_until`: yields as it advances (up to an animation budget, then
+        fast-forwards the rest); returns the final observation."""
         self.last_error = None
         from . import moongate
         g, p = self.game, self.game.party
@@ -246,17 +273,29 @@ class UltimaEnv:
             obs["waited_seconds"] = 0.0
             return obs
 
-        waited, reason = 0.0, "condition met"
+        waited, reason, animated, anim_budget = 0.0, "condition met", 0, 40
         while not holds():
             if waited >= max_seconds:
                 reason = f"timeout after {int(max_seconds)}s of game-time"
                 break
             self.game.advance_moon_seconds(0.25)
             waited += 0.25
+            if animated < anim_budget:               # animate the glide, then fast-forward the rest
+                animated += 1
+                yield
         obs = self.observe()
         obs["wait_reason"] = reason
         obs["waited_seconds"] = round(waited, 2)
         return obs
+
+    def play_steps(self, actions: List[str]):
+        """Generator form of `play`: apply each action, yielding after each so a window animates the
+        sequence; returns the observation after the last action."""
+        last = None
+        for a in actions:
+            last = self.act(a)
+            yield
+        return last if last is not None else self.observe()
 
     # --- traversal (walk a path in ONE call, stopping on anything interesting) ---------------
     def _walkable(self, x: int, y: int) -> bool:
@@ -324,7 +363,12 @@ class UltimaEnv:
         and takes real turns (food drains, monsters roam). STOPS early — returning the observation
         plus `travel_reason` and `steps_taken` — on: arrival (or adjacent, if the target tile isn't
         walkable), combat/entering a location, a dialog opening, taking damage, a genuine block, or
-        `max_steps`. Overworld and town only (not dungeons)."""
+        `max_steps`. Overworld and town only (not dungeons). Animates step-by-step in a window."""
+        return _drive(self.travel_steps(x, y, max_steps))
+
+    def travel_steps(self, x: int, y: int, max_steps: int = 100):
+        """Generator form of `travel_to`: yields after each step so a window can animate the walk;
+        returns the final observation. See `travel_to` for behaviour."""
         self.last_error = None
         g = self.game
         if g.mode not in (MOD_OUTDOORS, MOD_BUILDING):
@@ -353,6 +397,7 @@ class UltimaEnv:
             before = (g.party.x, g.party.y)
             g.handle(self._dir_key(cur, path[i]))
             steps += 1
+            yield                                   # animate: let the render loop draw this step
             if g.mode != base_mode:                 # combat started / entered/left a map
                 reason = f"interrupted: now {MODE_NAMES.get(g.mode, '?')}"
                 break

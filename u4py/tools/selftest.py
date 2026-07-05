@@ -193,6 +193,39 @@ def _():
     assert S.viewer_status()["mode"] == "headless"   # detached again
 
 
+@check("mcp --window: batch ops animate — the render loop steps travel_to per turn, not one jump")
+def _():
+    import os, threading
+    os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+    os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
+    from ultima4.agent import mcp_server as S
+    from ultima4.live_window import LiveWindow
+    S.new_game(7)
+    g = S._env.game; g.rng.seed(1)
+    g._enter_location(1, entry=(15, 30), kind="castle")     # town-like map, no random combat
+    win = LiveWindow(S._env, which="ega", action_every=1)
+    S.attach_window(win)
+    t = threading.Thread(target=lambda: win.run(max_ticks=3000), daemon=True)
+    t.start()
+    try:
+        here = S._env.observe()["position"]
+        target = None
+        for dx in range(-5, 6):
+            for dy in range(-5, 6):
+                tx, ty = here["x"] + dx, here["y"] + dy
+                if (dx, dy) != (0, 0) and S._env._walkable(tx, ty) and S._env._bfs_path(tx, ty):
+                    target = (tx, ty)
+            if target:
+                break
+        a0 = win.applied
+        o = S.travel_to(*target, max_steps=40)
+        assert o["travel_reason"] == "arrived"
+        # each internal step was applied on its own render frame (would be 1 if it ran as one job)
+        assert win.applied - a0 == o["steps_taken"] >= 2, "travel_to did not animate per turn"
+    finally:
+        win.stop(); t.join(timeout=2.0); S.detach_window(); win.close()
+
+
 @check("agent-example: the reference random agent plays a coherent session and enters a town")
 def _():
     import random
