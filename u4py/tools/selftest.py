@@ -923,11 +923,16 @@ def _():
     # a creature far off the active window is culled (frees its cap slot)
     g.monsters[:] = [monsters.Monster((100 + monsters.CULL_DIST + 3) & 0xFF, 100, 0x84)]
     monsters._cull(g); assert g.monsters == [], "distant monster not culled"
-    # a wedged/unreachable creature (no progress for STUCK_LIMIT turns) is culled even if nearby
-    g.monsters[:] = [monsters.Monster(103, 100, 0x84, stuck=monsters.STUCK_LIMIT)]
-    monsters._cull(g); assert g.monsters == [], "stuck monster not culled"
-    # REGRESSION: start with the cap full of stranded sea creatures; encounters must still fire
-    g.monsters[:] = [monsters.Monster(103, (100 + i) & 0xFF, 0x84) for i in range(monsters.MAX_MONSTERS)]
+    # a VISIBLE creature is NEVER culled, even wedged/stuck — it can't blink off the screen
+    vis = monsters.Monster(103, 100, 0x84, stuck=monsters.STUCK_LIMIT + 5)   # 3 tiles = in view
+    g.monsters[:] = [vis]; monsters._cull(g); assert g.monsters == [vis], "culled a VISIBLE monster"
+    # a wedged creature just OFF-screen (stuck, beyond sight) is culled to free the slot
+    off = monsters.Monster((100 + monsters.SIGHT_RADIUS + 2) & 0xFF, 100, 0x84, stuck=monsters.STUCK_LIMIT)
+    g.monsters[:] = [off]; monsters._cull(g); assert g.monsters == [], "off-screen stuck monster not culled"
+    # REGRESSION: cap full of stranded creatures left behind OFF-screen; encounters must still fire
+    far = 100 + monsters.SIGHT_RADIUS + 2
+    g.monsters[:] = [monsters.Monster(far & 0xFF, (100 + i) & 0xFF, 0x84, stuck=monsters.STUCK_LIMIT)
+                     for i in range(monsters.MAX_MONSTERS)]
     enc = 0
     for _ in range(400):
         monsters.spawn_and_move(g)

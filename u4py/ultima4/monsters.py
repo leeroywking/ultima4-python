@@ -25,6 +25,10 @@ CULL_DIST = 12
 # wedged (a sea creature against a coast) or milling unreachably (a sea creature near an inland
 # party). Without this, such monsters sit within CULL_DIST forever and still fill the cap.
 STUCK_LIMIT = 8
+# A creature this close (Chebyshev) is NEVER culled — the party can see it, so it must not blink
+# out of existence on screen; it may only leave by an encounter or by walking off. This exceeds the
+# 11x11 view radius (5) and SPAWN_RING (7), so nothing visible (or freshly spawned) is ever dropped.
+SIGHT_RADIUS = 8
 
 # Representative creature base tiles (4-frame land monsters / 2-frame sea creatures).
 LAND_MONSTERS = (0x90, 0x94, 0x98, 0x9C, 0xA0, 0xA4, 0xA8, 0xC0, 0xC4, 0xC8)  # rat..rogue
@@ -69,10 +73,15 @@ def _cull(game) -> None:
     (sea creatures wedged against a coast the avatar sailed past) fill MAX_MONSTERS forever and
     overworld encounters stop for the rest of the game."""
     p = game.party
-    game.monsters[:] = [
-        m for m in game.monsters
-        if m.stuck < STUCK_LIMIT
-        and max(abs(_wrap(p.x - m.x)), abs(_wrap(p.y - m.y))) <= CULL_DIST]
+    kept = []
+    for m in game.monsters:
+        d = max(abs(_wrap(p.x - m.x)), abs(_wrap(p.y - m.y)))
+        if d <= SIGHT_RADIUS:                       # visible -> never cull; it can only leave by
+            kept.append(m)                          # an encounter or by walking off the active area
+        elif d <= CULL_DIST and m.stuck < STUCK_LIMIT:
+            kept.append(m)                          # off-screen but nearby and still making progress
+        # else: off-screen AND (far OR wedged) -> drop, freeing its cap slot
+    game.monsters[:] = kept
 
 
 def _spawn(game) -> None:
