@@ -154,10 +154,6 @@ def draw_game(screen, A: "Assets", game, phase: int = 0, banner: str = None,
         for col, row, tid in game.npc_sprites(RADIUS) + game.monster_sprites(RADIUS):
             screen.blit(A.tiles[anim_frame(tid, phase)], (col * px, row * px))
         screen.blit(A.tiles[AVATAR_TILE], (RADIUS * px, RADIUS * px))
-    if game.mode == MOD_OUTDOORS:
-        cx = (VIEW * SCALE - 2 * CHAR_PX) // 2
-        for k, ph in enumerate((game.party.trammel & 7, game.party.felucca & 7)):
-            screen.blit(A.moon_glyphs[(ph - 1) & 7], (cx + k * CHAR_PX, 2))
     draw_stats_panel(screen, A, game)               # party roster column on the right (C: dspl_Stats)
     y0 = VIEW * SCALE + 6
     blit_text(screen, A.font_glyphs, game.status_line(), 6, y0)
@@ -172,10 +168,16 @@ def draw_game(screen, A: "Assets", game, phase: int = 0, banner: str = None,
     if game.active is not None and input_text is not None:
         blit_text(screen, A.font_glyphs, "> " + input_text + "_", 6,
                   VIEW * SCALE + PANEL_H - FONT_PX - 2)
-    if banner:                                       # demo caption strip over the top of the map
+    if banner:                                       # demo/agent caption strip — at the BOTTOM so it
+        by = WINDOW_H - FONT_PX - 6                   # never covers the moons at the top of the map
         bar = pygame.Surface((WINDOW_W, FONT_PX + 6)); bar.set_alpha(210); bar.fill((0, 0, 40))
-        screen.blit(bar, (0, 0))
-        blit_text(screen, A.font_glyphs, banner[:cols], 6, 3)
+        screen.blit(bar, (0, by))
+        blit_text(screen, A.font_glyphs, banner[:cols], 6, by + 3)
+    # The moons (C: U4_ANIM.C — top-center of the map) draw last, on the now-clear top strip.
+    if game.mode == MOD_OUTDOORS:
+        cx = (VIEW * SCALE - 2 * CHAR_PX) // 2
+        for k, ph in enumerate((game.party.trammel & 7, game.party.felucca & 7)):
+            screen.blit(A.moon_glyphs[(ph - 1) & 7], (cx + k * CHAR_PX, 2))
     pygame.display.flip()
 
 
