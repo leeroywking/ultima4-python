@@ -79,7 +79,7 @@ Every action is a short string:
 | `say <text>` | Free text into an **active** Talk/shop interaction (e.g. `say health`, `say bye`). |
 | `pass` | Consume one turn (SPACE). |
 | `wait <seconds>` | Let real game-time pass on the **moon clock** without moving (e.g. `wait 20`). See "Time & the moons". |
-| `wait until <cond>` | Advance the moon clock until a condition holds: `moongate`, `moons_dark`, `trammel N`, `felucca N`. |
+| `wait until <cond>` | Advance the moon clock until: `moongate` (first-caught), **`moongate x y`** (until the open gate leads to that destination — for directed travel), `moons_dark`, `trammel N`, `felucca N`. |
 | `go <x> <y>` (or `travel <x> <y>`) | **Walk a whole path in one call** to tile (x, y); stops on arrival or the first interesting event. See "Moving efficiently". |
 
 The command letters (`key X`) map to the original Ultima IV command set:
@@ -257,7 +257,7 @@ The open gate's **location** follows the current **Trammel** phase; stepping thr
 | 6 | (23,126) | 2:(38,224), 3:(50,37), 4:(166,19) |
 | 7 | (187,167) | 5:(104,194), 6:(23,126), 7:(187,167) |
 
-To use one: `travel_to` a gate location → `wait until moongate` (gate becomes adjacent) → `wait 1` until `observe()['moons']['gate']['destination']` is the one you want → step onto the gate. `observe()['moons']` always carries the live phases + open gate.
+**Directed travel:** `travel_to` a gate location, then `wait_until('moongate <x> <y>')` with the destination you want from the table above — it advances the clock until the open gate leads *there* (bare `wait_until('moongate')` only catches the FIRST of the 3, which usually isn't the one you want), then step onto the gate. A gate reaches exactly the 3 destinations in its row; targeting anything else times out and reports the reachable ones. `observe()['moons']` always carries the live phases + open gate.
 
 ### Companions, home towns, and the join rule
 

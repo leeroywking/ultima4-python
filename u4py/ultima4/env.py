@@ -393,9 +393,11 @@ class UltimaEnv:
 
     def wait_until(self, condition: str, max_seconds: float = 600.0) -> Dict[str, Any]:
         """Advance the moon clock until `condition` holds (or `max_seconds` of game-time elapse),
-        then observe. Conditions: 'moongate' (open gate on/adjacent to the avatar), 'moons_dark'
-        (both moons new), 'trammel N', 'felucca N'. The observation gains `wait_reason` and
-        `waited_seconds`. Animates in a window."""
+        then observe. Conditions: 'moongate' (open gate on/adjacent — stops at its FIRST destination),
+        'moongate <x> <y>' (until the open gate leads to that exact destination — for directed travel,
+        since each gate reaches 3), 'moons_dark', 'trammel N', 'felucca N'. Adds `wait_reason` +
+        `waited_seconds`; a timed-out targeted wait also lists `reachable_destinations`. Animates in a
+        window."""
         return _drive(self.wait_until_steps(condition, max_seconds))
 
     def wait_until_steps(self, condition: str, max_seconds: float = 600.0):
@@ -405,16 +407,28 @@ class UltimaEnv:
         from . import moongate
         g, p = self.game, self.game.party
         cond = condition.strip().lower()
+        parts = cond.split()
+        # `moongate` (any open gate) OR `moongate <x> <y>` (advance until the open gate leads to a
+        # SPECIFIC destination — each gate reaches 3, and the useful ones aren't the first-caught one).
+        target_dest = None
+        if cond.startswith("moongate") and len(parts) >= 3:
+            try:
+                target_dest = (int(parts[1]) & 0xFF, int(parts[2]) & 0xFF)
+            except ValueError:
+                self.last_error = f"wait_until: 'moongate x y' needs integer coords, got {condition!r}"
+                return self.observe()
 
         def holds():
-            if cond == "moongate":
-                return moongate.gate_adjacent(g)
+            if cond.startswith("moongate"):
+                if not moongate.gate_adjacent(g):
+                    return False
+                return target_dest is None or moongate.gate_destination(g) == target_dest
             if cond == "moons_dark":
                 return (p.trammel | p.felucca) == 0
             if cond.startswith("trammel"):
-                return p.trammel == int(cond.split()[1])
+                return p.trammel == int(parts[1])
             if cond.startswith("felucca"):
-                return p.felucca == int(cond.split()[1])
+                return p.felucca == int(parts[1])
             return None
 
         self.game.catch_up_moons()
@@ -432,7 +446,12 @@ class UltimaEnv:
             return obs
 
         waited, reason, animated, anim_budget = 0.0, "condition met", 0, 40
+        seen_dests = set()                           # destinations offered while the gate was open
         while not holds():
+            if moongate.gate_adjacent(g):
+                d = moongate.gate_destination(g)
+                if isinstance(d, tuple):
+                    seen_dests.add(d)
             if waited >= max_seconds:
                 reason = f"timeout after {int(max_seconds)}s of game-time"
                 break
@@ -444,6 +463,9 @@ class UltimaEnv:
         obs = self.observe()
         obs["wait_reason"] = reason
         obs["waited_seconds"] = round(waited, 2)
+        if target_dest is not None and reason.startswith("timeout"):
+            # help the agent: which destinations THIS gate site actually reaches (it wasn't the ask).
+            obs["reachable_destinations"] = [{"x": x, "y": y} for x, y in sorted(seen_dests)]
         return obs
 
     def play_steps(self, actions: List[str]):

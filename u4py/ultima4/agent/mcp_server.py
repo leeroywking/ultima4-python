@@ -163,9 +163,12 @@ def wait(seconds: float) -> Dict[str, Any]:
 def wait_until(condition: str) -> Dict[str, Any]:
     """Advance the moon clock until a condition holds, then return the observation.
 
-    Conditions: 'moongate' (an open gate is on/adjacent to you), 'moons_dark' (both moons new —
-    for harvesting mandrake/nightshade), 'trammel N', or 'felucca N'. The observation gains
-    `wait_reason` and `waited_seconds`."""
+    Conditions: 'moongate' (an open gate is on/adjacent to you — but this stops at the FIRST of the
+    gate's 3 destinations); **'moongate <x> <y>'** (advance until the open gate leads to that exact
+    destination — use this for directed travel, since a gate reaches 3 places and the useful one is
+    usually not the first); 'moons_dark' (both moons new); 'trammel N'; 'felucca N'. Stand at a gate
+    site first (see the moongate table in docs/AGENTS.md). The observation gains `wait_reason` and
+    `waited_seconds`; a timed-out targeted wait also lists `reachable_destinations`."""
     return _apply_op(lambda: _env.wait_until_steps(condition), label=f"wait_until {condition}")
 
 

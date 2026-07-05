@@ -564,6 +564,27 @@ def _():
     assert "unknown wait_until" in (env.wait_until("banana").get("error") or "")   # bad cond reported
 
 
+@check("agent moongate: `wait_until('moongate x y')` reaches ALL 3 of a gate's destinations (#14)")
+def _():
+    from ultima4.env import UltimaEnv
+    from ultima4.data_tables import MOONGATE_X, MOONGATE_Y
+    gx, gy = MOONGATE_X[6], MOONGATE_Y[6]           # the Skara Brae gate site (trammel phase 6)
+    # bare `moongate` only ever catches the first destination in the window (38,224)...
+    env = UltimaEnv(seed=7); env.game.moon_wallclock = False
+    env.game.party.x, env.game.party.y = gx - 1, gy
+    assert env.wait_until("moongate")["moons"]["gate"]["destination"] == {"x": 38, "y": 224}
+    # ...but the targeted form reaches each of the 3 (incl. the mainland hop that unstrands the party)
+    for tx, ty in [(38, 224), (50, 37), (166, 19)]:
+        e = UltimaEnv(seed=7); e.game.moon_wallclock = False
+        e.game.party.x, e.game.party.y = gx - 1, gy
+        g = e.wait_until(f"moongate {tx} {ty}", max_seconds=6000)["moons"]["gate"]
+        assert g["adjacent"] and g["destination"] == {"x": tx, "y": ty}, (tx, ty, g)
+    # an unreachable target times out but reports what THIS gate can actually reach
+    u = env.wait_until("moongate 200 200", max_seconds=400)
+    assert u["wait_reason"].startswith("timeout")
+    assert {"x": 50, "y": 37} in u["reachable_destinations"]
+
+
 @check("agent travel_to: pathfinds across a map in one call, arriving or stopping on interrupt")
 def _():
     from ultima4.env import UltimaEnv

@@ -49,9 +49,12 @@ def build() -> str:
         dests = ", ".join(f"{fp}:({MOONGATE_X[fp]},{MOONGATE_Y[fp]})" for fp in win[tp])
         out.append(f"| {tp} | ({MOONGATE_X[tp]},{MOONGATE_Y[tp]}) | {dests} |")
     out += ["",
-            "To use one: `travel_to` a gate location → `wait until moongate` (gate becomes adjacent) → "
-            "`wait 1` until `observe()['moons']['gate']['destination']` is the one you want → step onto "
-            "the gate. `observe()['moons']` always carries the live phases + open gate.", ""]
+            "**Directed travel:** `travel_to` a gate location, then `wait_until('moongate <x> <y>')` "
+            "with the destination you want from the table above — it advances the clock until the open "
+            "gate leads *there* (bare `wait_until('moongate')` only catches the FIRST of the 3, which "
+            "usually isn't the one you want), then step onto the gate. A gate reaches exactly the 3 "
+            "destinations in its row; targeting anything else times out and reports the reachable ones. "
+            "`observe()['moons']` always carries the live phases + open gate.", ""]
 
     out += ["### Companions, home towns, and the join rule", "",
             f"Class index = virtue = home town. **Lord British's Castle (level-ups + healing): "
