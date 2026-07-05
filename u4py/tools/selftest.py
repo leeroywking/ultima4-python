@@ -857,6 +857,25 @@ def _():
     assert any("Victory" in m for m in g.messages)
 
 
+@check("combat: the Avatar keeps the avatar tile; companions show their class figures")
+def _():
+    from ultima4 import combat
+    from ultima4.savefile import load_template_party
+    g = Game(); g.rng.seed(1)
+    g.party = load_template_party()                    # the 8 class companions, with _class bytes
+    g.party.member_count = 5
+    for c in g.party.members:
+        c.hp, c.hp_max, c.status = 30, 30, "G"
+    cs = combat.CombatState(g, 0x90)
+    assert cs.party_units[0].tile == 0x1F, "party slot 0 (Avatar) must keep the avatar tile"
+    seen = set()
+    for k in range(1, 5):
+        cls = ord(g.party.chara[k].char_class[:1]) & 0x07
+        assert cs.party_units[k].tile == 0x20 + 2 * cls, (k, hex(cs.party_units[k].tile))
+        seen.add(cs.party_units[k].tile)
+    assert len(seen) == 4, "companions should show distinct class figures, not all the avatar"
+
+
 @check("combat: a monster can defeat the party and return them to the overworld")
 def _():
     from ultima4 import combat

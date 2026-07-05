@@ -25,6 +25,21 @@ RANGED_WEAPONS = {3, 7, 8, 9, 13, 14}      # sling, bow, crossbow, oil, magic bo
 RANGED_REACH = 3
 
 
+AVATAR_TILE = 0x1F                        # TIL_1F: the Avatar figure (party slot 0)
+_CLASS_FIGURE_BASE = 0x20                 # class person-tiles: 0x20 mage, 0x22 bard, .. 0x2E shepherd
+
+
+def party_member_tile(index: int, chara) -> int:
+    """The arena figure for a party member. Slot 0 (the Avatar) keeps the avatar tile; each
+    companion shows as its CLASS figure — the person-tiles in tiles.py are laid out by class
+    (CLASS_NAMES order), two animation frames apart: `0x20 + 2*class` (mage 0x20 .. shepherd 0x2E).
+    The class is the character's `_class` byte (C: tChara._class)."""
+    if index == 0:
+        return AVATAR_TILE
+    cls = ord((chara.char_class or "\x00")[:1]) & 0x07
+    return _CLASS_FIGURE_BASE + 2 * cls
+
+
 def monster_hp(tile: int) -> int:
     """Rougher monsters (higher tile id) have more HP. C: monster stats table."""
     if tile < 0x90:
@@ -61,7 +76,8 @@ class CombatState:
         row = 1
         for i, c in enumerate(members):
             if c.alive:
-                self.party_units.append(Unit(1, min(row, ARENA - 2), 0x1F, c.hp, c.hp_max, member=i))
+                tile = party_member_tile(i, c)
+                self.party_units.append(Unit(1, min(row, ARENA - 2), tile, c.hp, c.hp_max, member=i))
                 row += 2
         count = 1 + game.rng.randint(0, 2)
         row = 1
